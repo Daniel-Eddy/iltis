@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ITIL 4 Foundation – Modules 1 &amp; 3 Summary</title>
+<style>
+  :root {
+    --purple:    #6b21a8;
+    --purple-lt: #ede9fe;
+    --purple-md: #a855f7;
+    --blue:      #1d4ed8;
+    --blue-lt:   #dbeafe;
+    --yellow:    #fef08a;
+    --yellow-dk: #ca8a04;
+    --green:     #15803d;
+    --green-lt:  #dcfce7;
+    --red:       #b91c1c;
+    --red-lt:    #fee2e2;
+    --orange-lt: #fff7ed;
+    --orange:    #c2410c;
+    --gray:      #f8fafc;
+    --border:    #e2e8f0;
+    --text:      #1e293b;
+    --sub:       #64748b;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #f1f5f9;
+    color: var(--text);
+    line-height: 1.6;
+    padding: 24px 16px 60px;
+  }
+
+  /* ── Header ── */
+  .header {
+    background: linear-gradient(135deg, var(--purple) 0%, #4f46e5 100%);
+    color: #fff;
+    border-radius: 16px;
+    padding: 32px 36px;
+    margin-bottom: 32px;
+    box-shadow: 0 4px 24px rgba(107,33,168,.25);
+  }
+  .header h1 { font-size: 1.9rem; font-weight: 700; margin-bottom: 4px; }
+  .header p  { font-size: 1rem; opacity: .85; }
+
+  /* ── Module tabs ── */
+  .tabs { display: flex; gap: 12px; margin-bottom: 28px; }
+  .tab-btn {
+    padding: 10px 24px;
+    border-radius: 999px;
+    border: 2px solid var(--border);
+    background: #fff;
+    font-size: .95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .2s;
+    color: var(--sub);
+  }
+  .tab-btn:hover  { border-color: var(--purple-md); color: var(--purple); }
+  .tab-btn.active { background: var(--purple); border-color: var(--purple); color: #fff; }
+
+  /* ── Module sections ── */
+  .module { display: none; }
+  .module.active { display: block; }
+
+  /* ── Section label ── */
+  .section-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: .8rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--sub);
+    margin: 32px 0 12px;
+  }
+  .section-label span {
+    display: inline-block;
+    width: 28px; height: 2px;
+    background: currentColor;
+    border-radius: 2px;
+  }
+
+  /* ── Card grid ── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+    margin-bottom: 8px;
+  }
+
+  /* ── Card ── */
+  .card {
+    background: #fff;
+    border-radius: 12px;
+    border: 1.5px solid var(--border);
+    padding: 20px 22px;
+    box-shadow: 0 1px 6px rgba(0,0,0,.06);
+    transition: box-shadow .2s;
+  }
+  .card:hover { box-shadow: 0 4px 18px rgba(0,0,0,.10); }
+
+  .card-title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title .icon {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .9rem;
+    flex-shrink: 0;
+  }
+
+  .card p, .card li { font-size: .92rem; color: var(--text); }
+  .card ul { padding-left: 18px; }
+  .card li { margin-bottom: 4px; }
+
+  /* ── Highlight badge ── */
+  .hl {
+    display: inline;
+    background: var(--yellow);
+    border-radius: 4px;
+    padding: 1px 5px;
+    font-weight: 600;
+    color: #78350f;
+  }
+
+  /* ── Definition block ── */
+  .def {
+    background: var(--purple-lt);
+    border-left: 4px solid var(--purple-md);
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    margin: 8px 0;
+    font-size: .9rem;
+  }
+  .def strong { color: var(--purple); }
+
+  /* ── Key point ── */
+  .key-point {
+    background: var(--blue-lt);
+    border-left: 4px solid var(--blue);
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    margin: 8px 0;
+    font-size: .9rem;
+    color: #1e3a5f;
+  }
+
+  /* ── Trainer note ── */
+  .trainer-note {
+    background: #fffbeb;
+    border: 1.5px dashed #f59e0b;
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin: 20px 0;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .trainer-note .tn-icon {
+    font-size: 1.4rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .trainer-note .tn-body { font-size: .91rem; color: #78350f; }
+  .trainer-note .tn-label {
+    font-weight: 700;
+    font-size: .78rem;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: #b45309;
+    margin-bottom: 4px;
+  }
+
+  /* ── Wide card (spans full row) ── */
+  .card.wide { grid-column: 1 / -1; }
+
+  /* ── Tag pills ── */
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .tag {
+    font-size: .78rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 999px;
+    border: 1.5px solid;
+  }
+  .tag-purple { background: var(--purple-lt); color: var(--purple); border-color: var(--purple-md); }
+  .tag-green  { background: var(--green-lt);  color: var(--green);  border-color: #86efac; }
+  .tag-red    { background: var(--red-lt);    color: var(--red);    border-color: #fca5a5; }
+  .tag-blue   { background: var(--blue-lt);   color: var(--blue);   border-color: #93c5fd; }
+
+  /* ── Utility/Warranty visual ── */
+  .uw-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+  .uw-box {
+    border-radius: 10px;
+    padding: 14px;
+    text-align: center;
+  }
+  .uw-box.utility  { background: #f0fdf4; border: 2px solid #4ade80; }
+  .uw-box.warranty { background: #eff6ff; border: 2px solid #60a5fa; }
+  .uw-box .uw-label { font-weight: 800; font-size: 1rem; margin-bottom: 4px; }
+  .uw-box .uw-sub   { font-size: .82rem; color: var(--sub); }
+  .uw-box .uw-desc  { font-size: .88rem; margin-top: 6px; }
+
+  /* ── Principles list ── */
+  .principle-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    border: 1.5px solid var(--border);
+    background: #fff;
+    transition: box-shadow .2s;
+  }
+  .principle-item:hover { box-shadow: 0 2px 12px rgba(0,0,0,.08); }
+  .principle-num {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--purple);
+    color: #fff;
+    font-weight: 700;
+    font-size: .9rem;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .principle-body { flex: 1; }
+  .principle-body strong { display: block; font-size: .97rem; margin-bottom: 3px; }
+  .principle-body p { font-size: .87rem; color: var(--sub); }
+
+  /* ── Two column layout ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
+
+  /* ── Responsive ── */
+  @media (max-width: 600px) {
+    .uw-grid, .two-col { grid-template-columns: 1fr; }
+    .tabs { flex-wrap: wrap; }
+    .header h1 { font-size: 1.4rem; }
+    .card-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>📘 ITIL 4 Foundation — Study Summary</h1>
+  <p>Module 1: Key Concepts of Service Management &nbsp;·&nbsp; Module 3: The Guiding Principles</p>
+</div>
+
+<!-- ── Tabs ── -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="showModule('m1', this)">📦 Module 1 — Key Concepts</button>
+  <button class="tab-btn" onclick="showModule('m3', this)">🧭 Module 3 — Guiding Principles</button>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     MODULE 1
+════════════════════════════════════════════════ -->
+<div id="m1" class="module active">
+
+  <div class="section-label"><span></span> Core Definitions <span></span></div>
+
+  <div class="card-grid">
+
+    <div class="card">
+      <div class="card-title">
+        <div class="icon" style="background:#ede9fe;color:#6b21a8;">🏢</div>
+        Service Management
+      </div>
+      <div class="def">
+        <strong>Definition:</strong> A set of specialized organizational capabilities for <span class="hl">enabling value</span> to customers in the form of services.
+      </div>
+      <p style="font-size:.87rem;color:var(--sub);margin-top:8px;">It is about <em>how</em> organizations create, deliver and improve services.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <div class="icon" style="background:#fef9c3;color:#854d0e;">💡</div>
+        Value
+      </div>
+      <div class="def">
+        <strong>Definition:</strong> The <span class="hl">perceived benefits, usefulness, and importance</span> of something.
+      </div>
+      <p style="font-size:.87rem;color:var(--sub);margin-top:8px;">Value is always <em>co-created</em> — it is never delivered by the provider alone.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <div class="icon" style="background:#dcfce7;color:#15803d;">⚙️</div>
+        Service
+      </div>
+      <div class="def">
+        <strong>Definition:</strong> A means of enabling <span class="hl">value co-creation</span> by facilitating outcomes that customers want to achieve, <em>without</em> the customer having to manage specific costs and risks.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <div class="icon" style="background:#dbeafe;color:#1d4ed8;">🏗️</div>
+        Organization
+      </div>
+      <div class="def">
+        <strong>Definition:</strong> Any person or group with its own <span class="hl">functions, responsibilities, authorities, and relationships</span> that operate in an integrated way to facilitate value creation and fulfil common objectives.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Stakeholders -->
+  <div class="section-label"><span></span> Stakeholders <span></span></div>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-title">
+        <div class="icon" style="background:#fce7f3;color:#9d174d;">👥</div>
+        Types of Stakeholders
+      </div>
+      <div class="tags">
+        <span class="tag tag-purple">Service Providers</span>
+        <span class="tag tag-blue">Service Consumers</span>
+        <span class="tag tag-green">Other Stakeholders</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <div class="icon" style="background:#fff7ed;color:#c2410c;">🎭</div>
+        Service Consumer Roles
+      </div>
+      <ul style="margin-top:6px;">
+        <li><strong>Customers</strong> — define <span class="hl">requirements</span> and take responsibility for <span class="hl">outcomes</span></li>
+        <li style="margin-top:8px;"><strong>Users</strong> — <span class="hl">who use services</span></li>
+        <li style="margin-top:8px;"><strong>Sponsors</strong> — <span class="hl">who authorize the budget</span> for service consumption</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Trainer note: Sponsors -->
+  <div class="trainer-note">
+    <div class="tn-icon">✏️</div>
+    <div class="tn-body">
+      <div class="tn-label">Trainer Note — Consumer Roles</div>
+      The Sponsor role authorizes the <em>budget</em> and is therefore accountable for the <em>cost</em> of service consumption. One person can hold multiple roles simultaneously (e.g., someone can be both user and customer).
+    </div>
+  </div>
+
+  <!-- Service Offerings -->
+  <div class="section-label"><span></span> Service Offerings <span></span></div>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-title">
+        <div class="icon" style="background:#f0fdf4;color:#15803d;">📦</div>
+        Goods
+      </div>
+      <p><span class="hl">Transferred</span> from provider to consumer — the consumer takes responsibility for future use.</p>
+      <p style="margin-top:6px;font-size:.85rem;color:var(--sub);">Example: a laptop, a physical device.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <div class="icon" style="background:#dbeafe;color:#1d4ed8;">🔑</div>
+        Access to Resources
+      </div>
+      <p><span class="hl">Granted or licensed</span> to a consumer under agreed terms and conditions.</p>
+      <p style="margin-top:6px;font-size:.85rem;color:var(--sub);">Example: mobile network access, cloud storage.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <div class="icon" style="background:#fce7f3;color:#9d174d;">🛠️</div>
+        Service Actions
+      </div>
+      <p>Performed to <span class="hl">address a consumer's need</span>. Carried out by the service provider per agreement.</p>
+      <p style="margin-top:6px;font-size:.85rem;color:var(--sub);">Example: user support, training.</p>
+    </div>
+  </div>
+
+  <!-- Service Relationships -->
+  <div class="section-label"><span></span> Service Relationships <span></span></div>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-title">
+        <div class="icon" style="background:#ede9fe;color:#6b21a8;">📤</div>
+        Service Provision
+      </div>
+      <p>Activities <span class="hl">performed by an organization to provide services</span>.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <div class="icon" style="background:#dcfce7;color:#15803d;">📥</div>
+        Service Consumption
+      </div>
+      <p>Activities <span class="hl">performed by an organization to consume services</span>.</p>
+    </div>
+
+    <div class="card wide">
+      <div class="card-title">
+        <div class="icon" style="background:#fef9c3;color:#854d0e;">🤝</div>
+        Service Relationship Management
+      </div>
+      <div class="key-point">
+        <span class="hl">Joint activities</span> performed by a service provider <em>and</em> a service consumer to ensure <strong>continual value co-creation</strong>, based on agreed and available service offerings.
+      </div>
+    </div>
+  </div>
+
+  <!-- Costs & Risks -->
+  <div class="section-label"><span></span> Costs &amp; Risks <span></span></div>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-title">
+        <div class="icon" style="background:#fef9c3;color:#854d0e;">💰</div>
+        Costs
+      </div>
+      <div class="two-col" style="margin-top:8px;">
+        <div style="background:var(--green-lt);border-radius:8px;padding:10px;text-align:center;">
+          <div style="font-weight:700;color:var(--green);font-size:.9rem;">✅ Costs Removed</div>
+          <div style="font-size:.83rem;color:var(--sub);margin-top:4px;">from the consumer <em>by</em> the service</div>
+        </div>
+        <div style="background:var(--red-lt);border-radius:8px;padding:10px;text-align:center;">
+          <div style="font-weight:700;color:var(--red);font-size:.9rem;">❌ Costs Imposed</div>
+          <div style="font-size:.83rem;color:var(--sub);margin-top:4px;"><em>on</em> the consumer by the service</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <div class="icon" style="background:#fee2e2;color:#b91c1c;">⚠️</div>
+        Risks
+      </div>
+      <div class="two-col" style="margin-top:8px;">
+        <div style="background:var(--green-lt);border-radius:8px;padding:10px;text-align:center;">
+          <div style="font-weight:700;color:var(--green);font-size:.9rem;">✅ Risks Removed</div>
+          <div style="font-size:.83rem;color:var(--sub);margin-top:4px;">Part of the value proposition</div>
+        </div>
+        <div style="background:var(--red-lt);border-radius:8px;padding:10px;text-align:center;">
+          <div style="font-weight:700;color:var(--red);font-size:.9rem;">❌ Risks Imposed</div>
+          <div style="font-size:.83rem;color:var(--sub);margin-top:4px;">Risks of service consumption</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Output vs Outcome -->
+  <div class="section-label"><span></span> Output vs Outcome <span></span></div>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-title">
+        <div class="icon" style="background:#dbeafe;color:#1d4ed8;">📄</div>
+        Output
+      </div>
+      <p>A <span class="hl">tangible or intangible deliverable</span> of an activity.</p>
+      <p style="margin-top:6px;font-size:.85rem;color:var(--sub);">Example: a report, a deployed application.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">
+        <div class="icon" style="background:#f0fdf4;color:#15803d;">🎯</div>
+        Outcome
+      </div>
+      <p>A result for a stakeholder, <span class="hl">enabled by one or more outputs</span>.</p>
+      <p style="margin-top:6px;font-size:.85rem;color:var(--sub);">Example: faster business operations enabled by the deployed app.</p>
+    </div>
+  </div>
+
+  <!-- Utility & Warranty -->
+  <div class="section-label"><span></span> Utility &amp; Warranty <span></span></div>
+
+  <div class="card-grid">
+    <div class="card wide">
+      <div class="card-title">
+        <div class="icon" style="background:#ede9fe;color:#6b21a8;">⚖️</div>
+        Both are needed to deliver value
+      </div>
+      <div class="uw-grid">
+        <div class="uw-box utility">
+          <div class="uw-label">🟢 Utility</div>
+          <div class="uw-sub">Fit for <strong>Purpose</strong></div>
+          <div class="uw-desc"><span class="hl">Functionality</span> offered by a product or service to meet a particular need — <em>"what the service does"</em></div>
+        </div>
+        <div class="uw-box warranty">
+          <div class="uw-label">🔵 Warranty</div>
+          <div class="uw-sub">Fit for <strong>Use</strong></div>
+          <div class="uw-desc"><span class="hl">Assurance</span> that a product or service will meet agreed requirements — <em>"how the service performs"</em></div>
+        </div>
+      </div>
+      <div class="key-point" style="margin-top:12px;">
+        🎢 <strong>Theme Park Example:</strong> A park with exciting rides (utility ✓) that frequently break down (warranty ✗) fails to deliver value. Similarly, rides always running (warranty ✓) but not exciting enough (utility ✗) also fails. <em>Both must be met.</em>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trainer note: Utility/Warranty -->
+  <div class="trainer-note">
+    <div class="tn-icon">✏️</div>
+    <div class="tn-body">
+      <div class="tn-label">Trainer Note — Utility &amp; Warranty</div>
+      Ask yourself: <em>"How is the service delivered?"</em> — that is warranty. A service can do exactly what is needed (utility) but still fail if it is unreliable, insecure, or unavailable when needed (warranty).
+    </div>
+  </div>
+
+</div>
+<!-- end module 1 -->
+
+
+<!-- ════════════════════════════════════════════════
+     MODULE 3
+════════════════════════════════════════════════ -->
+<div id="m3" class="module">
+
+  <!-- What is a Guiding Principle -->
+  <div class="section-label"><span></span> What is a Guiding Principle? <span></span></div>
+
+  <div class="card-grid">
+    <div class="card wide">
+      <div class="card-title">
+        <div class="icon" style="background:#ede9fe;color:#6b21a8;">🧭</div>
+        Guiding Principle — Definition
+      </div>
+      <div class="def">
+        <strong>Definition:</strong> A <span class="hl">recommendation that guides an organization in all circumstances</span>, regardless of changes in its goals, strategies, or type of work. A guiding principle is <span class="hl">universal and enduring</span>.
+      </div>
+      <div class="key-point" style="margin-top:10px;">
+        All activities conducted by the organization should link back, directly or indirectly, to <span class="hl">value</span> for itself, its customers, and other stakeholders.
+      </div>
+    </div>
+  </div>
+
+  <!-- The 7 Principles -->
+  <div class="section-label"><span></span> The 7 Guiding Principles <span></span></div>
+
+  <div class="principle-item">
+    <div class="principle-num">1</div>
+    <div class="principle-body">
+      <strong>Focus on Value</strong>
+      <p>Everything the organization does should map, directly or indirectly, to value for stakeholders.</p>
+      <ul style="margin-top:6px;padding-left:18px;font-size:.86rem;color:var(--sub);">
+        <li><span class="hl">Know how service consumers use each service</span></li>
+        <li><span class="hl">Encourage a focus on value among all staff</span></li>
+        <li><span class="hl">Focus on value during normal operational activity</span>, not only during improvement initiatives</li>
+        <li><span class="hl">Include focus on value in every step of any improvement initiative</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="principle-item">
+    <div class="principle-num">2</div>
+    <div class="principle-body">
+      <strong>Start Where You Are</strong>
+      <p>Do not start from scratch without considering what is already available.</p>
+      <div class="key-point" style="margin-top:8px;">
+        <span class="hl">"Do not start from scratch and build something new without considering what is already available to be leveraged."</span> There is likely a great deal in current services, processes, programmes, projects, and people that can be used.
+      </div>
+      <ul style="margin-top:6px;padding-left:18px;font-size:.86rem;color:var(--sub);">
+        <li>Look at what exists <span class="hl">as objectively as possible</span>, using the customer or desired outcome as the starting point</li>
+        <li>When successful practices are found, <span class="hl">determine if and how these can be replicated or expanded</span></li>
+        <li><span class="hl">Apply your risk management skills</span></li>
+        <li><span class="hl">Recognize that sometimes nothing from the current state can be reused</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="principle-item">
+    <div class="principle-num">3</div>
+    <div class="principle-body">
+      <strong>Progress Iteratively with Feedback</strong>
+      <p>Do not attempt to do everything at once. Work in smaller, manageable sections.</p>
+      <ul style="margin-top:6px;padding-left:18px;font-size:.86rem;color:var(--sub);">
+        <li><span class="hl">Fast does not mean incomplete</span></li>
+        <li>Avoid <span class="hl">analysis paralysis</span> — "comprehend the whole but do something"</li>
+        <li><span class="hl">Minimum viable product</span> — deliver value quickly, then improve</li>
+        <li><span class="hl">The ecosystem is constantly changing, so feedback is essential</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="principle-item">
+    <div class="principle-num">4</div>
+    <div class="principle-body">
+      <strong>Collaborate and Promote Visibility</strong>
+      <p>Work together across boundaries, share information, and make work visible.</p>
+      <div class="key-point" style="margin-top:8px;">
+        <span class="hl">"When initiatives involve the right people in the correct roles, efforts benefit from better buy-in, greater relevance, and increased likelihood of long-term success."</span>
+      </div>
+      <ul style="margin-top:6px;padding-left:18px;font-size:.86rem;color:var(--sub);">
+        <li><span class="hl">Collaboration does not mean consensus</span></li>
+        <li><span class="hl">Decisions can only be made using visible data</span></li>
+        <li><span class="hl">Communication should happen in a way that the audience can hear</span></li>
+        <li>Identify bottlenecks, excess capacity, and <span class="hl">understand the flow of work in progress</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="principle-item">
+    <div class="principle-num">5</div>
+    <div class="principle-body">
+      <strong>Think and Work Holistically</strong>
+      <p>No service, practice, process, department, or supplier works in a vacuum.</p>
+      <div class="key-point" style="margin-top:8px;">
+        <span class="hl">"The outputs that the organization delivers will suffer, unless it works in an integrated way to handle its activities as a whole, rather than as separate parts."</span>
+      </div>
+      <ul style="margin-top:6px;padding-left:18px;font-size:.86rem;color:var(--sub);">
+        <li><span class="hl">Recognize the complexity of the systems</span></li>
+        <li><span class="hl">Collaboration is key to thinking and working holistically</span></li>
+        <li>Where possible, <span class="hl">look for patterns in the needs of and interactions between system elements</span></li>
+        <li><span class="hl">Automation can facilitate working holistically</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="principle-item">
+    <div class="principle-num">6</div>
+    <div class="principle-body">
+      <strong>Keep It Simple and Practical</strong>
+      <p>Use the minimum number of steps to accomplish an objective.</p>
+      <ul style="margin-top:6px;padding-left:18px;font-size:.86rem;color:var(--sub);">
+        <li><span class="hl">Ensure every activity contributes to the creation of value</span>. If it doesn't — eliminate it.</li>
+        <li><span class="hl">Simplicity is the ultimate sophistication</span></li>
+        <li><span class="hl">Do fewer things but do them better</span></li>
+        <li><span class="hl">Respect the time of the people involved</span></li>
+        <li><span class="hl">Easier to understand, more likely to adopt</span></li>
+        <li><span class="hl">Simplicity is the best route to achieving quick wins</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="principle-item">
+    <div class="principle-num">7</div>
+    <div class="principle-body">
+      <strong>Optimize and Automate</strong>
+      <p>Maximize the value of work carried out by human and technical resources.</p>
+      <p style="font-size:.87rem;margin-top:6px;color:var(--sub);">Technology can help expand and undertake frequent/repetitive tasks, allowing human resources for more complex decision-making. However, <em>automation should not always be relied upon without human intervention capability</em>.</p>
+      <ul style="margin-top:6px;padding-left:18px;font-size:.86rem;color:var(--sub);">
+        <li><span class="hl">Understand and agree the context</span> of the proposed optimization</li>
+        <li><span class="hl">Assess the current state</span> of the proposed optimization</li>
+        <li><span class="hl">Agree what the future state and priorities should be</span>, focusing on simplification and value</li>
+        <li><span class="hl">Ensure appropriate stakeholder engagement and commitment</span></li>
+        <li><span class="hl">Execute the improvements iteratively</span></li>
+        <li><span class="hl">Continually monitor the impact of optimization</span></li>
+        <li><span class="hl">Define your metrics</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Trainer note: Measurement -->
+  <div class="trainer-note">
+    <div class="tn-icon">✏️</div>
+    <div class="tn-body">
+      <div class="tn-label">Trainer Note — Optimize &amp; Automate</div>
+      Use measurement to <em>enable</em>, not <em>replace</em>, analysis of the observed. Over-reliance on analytics and reporting injects bias and risk into decision-making.
+    </div>
+  </div>
+
+  <!-- Quick reference card -->
+  <div class="section-label"><span></span> Quick Reference <span></span></div>
+
+  <div class="card-grid">
+    <div class="card wide">
+      <div class="card-title">
+        <div class="icon" style="background:#ede9fe;color:#6b21a8;">⚡</div>
+        7 Guiding Principles — At a Glance
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-top:10px;">
+        <div style="background:#f3f4f6;border-radius:8px;padding:10px 12px;"><span style="font-weight:700;">1.</span> Focus on Value</div>
+        <div style="background:#f3f4f6;border-radius:8px;padding:10px 12px;"><span style="font-weight:700;">2.</span> Start Where You Are</div>
+        <div style="background:#f3f4f6;border-radius:8px;padding:10px 12px;"><span style="font-weight:700;">3.</span> Progress Iteratively with Feedback</div>
+        <div style="background:#f3f4f6;border-radius:8px;padding:10px 12px;"><span style="font-weight:700;">4.</span> Collaborate &amp; Promote Visibility</div>
+        <div style="background:#f3f4f6;border-radius:8px;padding:10px 12px;"><span style="font-weight:700;">5.</span> Think &amp; Work Holistically</div>
+        <div style="background:#f3f4f6;border-radius:8px;padding:10px 12px;"><span style="font-weight:700;">6.</span> Keep It Simple &amp; Practical</div>
+        <div style="background:#f3f4f6;border-radius:8px;padding:10px 12px;"><span style="font-weight:700;">7.</span> Optimize &amp; Automate</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<!-- end module 3 -->
+
+<script>
+  function showModule(id, btn) {
+    document.querySelectorAll('.module').forEach(m => m.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+  }
+</script>
+
+</body>
+</html>
