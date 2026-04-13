@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ITIL 4 Foundation — Study Notes</title>
   <style>
-    /* ── Reset & Base ── */
+    /* ── Reset & Base (Mobile First) ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
@@ -28,7 +28,7 @@
       --tip-border:#22c55e;
       --def-bg:    #f8fafc;
       --def-border:#cbd5e1;
-      font-size: 15px;
+      font-size: 14px; /* Slightly smaller base font for mobile */
     }
 
     body {
@@ -36,21 +36,82 @@
       background: var(--bg);
       color: var(--txt);
       display: flex;
+      flex-direction: column; /* Stacked by default for mobile */
       min-height: 100vh;
-      line-height: 1.65;
+      line-height: 1.6;
     }
 
-    /* ── Sidebar ── */
-    #sidebar {
-      width: 240px;
-      min-width: 240px;
+    /* ── Mobile Header ── */
+    .mobile-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       background: var(--sidebar-bg);
+      padding: 1rem 1.25rem;
       position: sticky;
       top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .mobile-header h1 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin: 0;
+    }
+    .menu-toggle {
+      background: none;
+      border: none;
+      color: #ffffff;
+      font-size: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ── Sidebar (Slide-out Drawer for Mobile) ── */
+    .sidebar-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 150;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .sidebar-overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    #sidebar {
+      position: fixed;
+      top: 0;
+      left: -280px; /* Hidden off-screen */
+      width: 280px;
       height: 100vh;
+      background: var(--sidebar-bg);
+      z-index: 200;
       overflow-y: auto;
       padding: 0 0 2rem 0;
-      flex-shrink: 0;
+      transition: left 0.3s ease;
+      box-shadow: 2px 0 8px rgba(0,0,0,0.2);
+    }
+    #sidebar.open {
+      left: 0;
+    }
+    .close-sidebar {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      color: var(--sidebar-txt);
+      font-size: 1.5rem;
+      cursor: pointer;
     }
     #sidebar .logo {
       padding: 1.25rem 1.25rem 1rem;
@@ -63,6 +124,7 @@
       color: #ffffff;
       letter-spacing: 0.04em;
       text-transform: uppercase;
+      padding-right: 2rem; /* Make room for close button */
     }
     #sidebar .logo p {
       font-size: 0.72rem;
@@ -71,10 +133,10 @@
     }
     #sidebar nav a {
       display: block;
-      padding: 0.42rem 1.25rem;
+      padding: 0.5rem 1.25rem;
       color: var(--sidebar-txt);
       text-decoration: none;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       transition: color 0.15s, background 0.15s;
       border-left: 3px solid transparent;
     }
@@ -85,7 +147,7 @@
     }
     #sidebar nav .section-label {
       padding: 1rem 1.25rem 0.3rem;
-      font-size: 0.65rem;
+      font-size: 0.7rem;
       font-weight: 700;
       letter-spacing: 0.1em;
       text-transform: uppercase;
@@ -93,39 +155,40 @@
     }
     #sidebar nav .sub {
       padding-left: 2rem;
-      font-size: 0.76rem;
+      font-size: 0.8rem;
     }
 
-    /* ── Main ── */
+    /* ── Main Content ── */
     #main {
       flex: 1;
-      padding: 2rem 2.5rem 4rem;
-      max-width: 900px;
+      padding: 1.25rem 1rem 3rem; /* Tighter padding for mobile */
+      width: 100%;
     }
 
     .page-header {
-      margin-bottom: 2rem;
-      padding-bottom: 1.25rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
       border-bottom: 2px solid var(--border);
     }
     .page-header h1 {
-      font-size: 1.6rem;
+      font-size: 1.4rem;
       font-weight: 800;
       color: var(--txt);
+      line-height: 1.3;
     }
     .page-header p {
       color: var(--muted);
       font-size: 0.85rem;
-      margin-top: 0.35rem;
+      margin-top: 0.5rem;
     }
-    .badges { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.75rem; }
+    .badges { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem; }
     .badge {
       display: inline-block;
       background: var(--tag-bg);
       color: var(--tag-txt);
-      font-size: 0.72rem;
+      font-size: 0.75rem;
       font-weight: 600;
-      padding: 0.25rem 0.6rem;
+      padding: 0.3rem 0.6rem;
       border-radius: 999px;
     }
     .badge.green { background: #ecfdf5; color: #059669; }
@@ -133,14 +196,14 @@
 
     /* ── Module / Section wrappers ── */
     .module {
-      margin-bottom: 2.5rem;
+      margin-bottom: 2rem;
     }
     .module-header {
       background: var(--accent);
       color: #fff;
-      padding: 0.65rem 1rem;
+      padding: 0.75rem 1rem;
       border-radius: 8px 8px 0 0;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       font-weight: 700;
       letter-spacing: 0.05em;
       text-transform: uppercase;
@@ -155,7 +218,7 @@
       border: 1px solid var(--border);
       border-top: none;
       border-radius: 0 0 8px 8px;
-      padding: 1.25rem 1.5rem;
+      padding: 1rem;
     }
 
     /* ── Section inside module ── */
@@ -163,19 +226,20 @@
     .section:last-child { margin-bottom: 0; }
 
     h2.section-title {
-      font-size: 0.95rem;
+      font-size: 1.05rem;
       font-weight: 700;
       color: var(--txt);
       margin-bottom: 0.75rem;
       padding-bottom: 0.4rem;
       border-bottom: 1px solid var(--border);
+      line-height: 1.4;
     }
 
     h3.sub-title {
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       font-weight: 600;
       color: var(--accent);
-      margin: 0.9rem 0 0.4rem;
+      margin: 1rem 0 0.5rem;
     }
 
     /* ── Definition box ── */
@@ -183,18 +247,18 @@
       background: var(--def-bg);
       border-left: 3px solid var(--def-border);
       border-radius: 0 6px 6px 0;
-      padding: 0.6rem 0.9rem;
-      margin: 0.5rem 0;
-      font-size: 0.83rem;
+      padding: 0.75rem;
+      margin: 0.75rem 0;
+      font-size: 0.85rem;
     }
     .def strong { color: var(--txt); font-weight: 700; }
 
     /* ── Key point list ── */
-    ul.kp { list-style: none; padding: 0; margin: 0.4rem 0; }
+    ul.kp { list-style: none; padding: 0; margin: 0.5rem 0; }
     ul.kp li {
       padding: 0.25rem 0 0.25rem 1.2rem;
       position: relative;
-      font-size: 0.83rem;
+      font-size: 0.85rem;
     }
     ul.kp li::before {
       content: "›";
@@ -209,7 +273,7 @@
       background: #eef2ff;
       color: #3b52b5;
       font-weight: 700;
-      font-size: 0.78em;
+      font-size: 0.8em;
       padding: 0.1em 0.35em;
       border-radius: 4px;
       letter-spacing: 0.02em;
@@ -219,10 +283,10 @@
     .callout {
       border-left: 3px solid var(--warn-border);
       background: var(--warn-bg);
-      padding: 0.55rem 0.9rem;
+      padding: 0.75rem;
       border-radius: 0 6px 6px 0;
-      margin: 0.6rem 0;
-      font-size: 0.82rem;
+      margin: 0.75rem 0;
+      font-size: 0.85rem;
     }
     .callout.tip {
       border-left-color: var(--tip-border);
@@ -233,32 +297,46 @@
       font-size: 0.75rem;
       letter-spacing: 0.05em;
       text-transform: uppercase;
-      margin-bottom: 0.2rem;
+      margin-bottom: 0.25rem;
     }
     .callout.tip .label { color: #16a34a; }
     .callout .label.warn { color: var(--accent3); }
 
-    /* ── Table ── */
-    table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin: 0.5rem 0; }
+    /* ── Responsive Tables ── */
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 0.75rem 0;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+    table { 
+      width: 100%; 
+      border-collapse: collapse; 
+      font-size: 0.85rem; 
+      min-width: 400px; /* Forces scroll on very tight screens */
+    }
     th {
       background: #f1f5f9;
       text-align: left;
-      padding: 0.4rem 0.75rem;
+      padding: 0.6rem 0.75rem;
       font-size: 0.75rem;
       font-weight: 700;
       letter-spacing: 0.04em;
       text-transform: uppercase;
       color: var(--muted);
       border-bottom: 2px solid var(--border);
+      white-space: nowrap;
     }
     td {
-      padding: 0.4rem 0.75rem;
+      padding: 0.6rem 0.75rem;
       border-bottom: 1px solid var(--border);
       vertical-align: top;
     }
     tr:last-child td { border-bottom: none; }
     td strong { color: var(--accent); }
-    td.mono { font-family: monospace; font-size: 0.78rem; }
+    td.mono { font-family: monospace; font-size: 0.8rem; }
 
     /* ── Practice accordion ── */
     .practice {
@@ -271,7 +349,7 @@
       display: flex;
       align-items: center;
       gap: 0.75rem;
-      padding: 0.7rem 1rem;
+      padding: 0.75rem 1rem;
       background: #f8fafc;
       cursor: pointer;
       user-select: none;
@@ -286,10 +364,10 @@
     .practice-num {
       background: var(--accent);
       color: #fff;
-      font-size: 0.7rem;
+      font-size: 0.75rem;
       font-weight: 700;
-      width: 1.5rem;
-      height: 1.5rem;
+      width: 1.75rem;
+      height: 1.75rem;
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -298,57 +376,57 @@
     }
     .practice-name {
       font-weight: 700;
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       flex: 1;
+      line-height: 1.3;
     }
     .practice-arrow {
       color: var(--muted);
-      font-size: 0.7rem;
+      font-size: 0.75rem;
       transition: transform 0.2s;
     }
     .practice-header.open .practice-arrow { transform: rotate(90deg); }
     .practice-body {
       display: none;
-      padding: 0.9rem 1rem 1rem;
+      padding: 1rem;
     }
     .practice-body.open { display: block; }
     .practice-purpose {
       background: #f0fdf4;
       border-left: 3px solid var(--accent2);
       border-radius: 0 4px 4px 0;
-      padding: 0.5rem 0.75rem;
-      font-size: 0.82rem;
-      margin-bottom: 0.6rem;
+      padding: 0.6rem 0.75rem;
+      font-size: 0.85rem;
+      margin-bottom: 0.75rem;
     }
     .practice-purpose strong { color: #059669; }
 
     /* ── Awareness practice cards ── */
     .awareness-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.65rem;
-      margin-top: 0.5rem;
+      grid-template-columns: 1fr; /* Stacked for mobile */
+      gap: 0.75rem;
+      margin-top: 0.75rem;
     }
-    @media (max-width: 600px) { .awareness-grid { grid-template-columns: 1fr; } }
     .acard {
       border: 1px solid var(--border);
       border-radius: 6px;
-      padding: 0.7rem 0.9rem;
-      font-size: 0.8rem;
+      padding: 0.85rem;
+      font-size: 0.85rem;
     }
     .acard .acard-title {
       font-weight: 700;
-      font-size: 0.78rem;
+      font-size: 0.85rem;
       color: var(--txt);
-      margin-bottom: 0.35rem;
+      margin-bottom: 0.4rem;
     }
     .acard .cat-badge {
       display: inline-block;
       font-size: 0.65rem;
       font-weight: 700;
-      padding: 0.1em 0.4em;
-      border-radius: 3px;
-      margin-bottom: 0.3rem;
+      padding: 0.2em 0.5em;
+      border-radius: 4px;
+      margin-bottom: 0.4rem;
       letter-spacing: 0.04em;
       text-transform: uppercase;
     }
@@ -357,87 +435,162 @@
     .cat-tm { background: #fce7f3; color: #9d174d; }
 
     /* ── Two-col list ── */
-    .two-col { columns: 2; column-gap: 1.5rem; }
-    @media (max-width: 600px) { .two-col { columns: 1; } }
+    .two-col { columns: 1; } /* 1 col for mobile */
 
     /* ── Scroll margin for anchor links ── */
-    [id] { scroll-margin-top: 1.5rem; }
+    [id] { scroll-margin-top: 5rem; } /* Adjusted to clear sticky header */
 
     /* ── SVC activity pills ── */
-    .svc-pills { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.4rem; }
+    .svc-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
     .pill {
-      font-size: 0.7rem;
+      font-size: 0.75rem;
       font-weight: 600;
-      padding: 0.2rem 0.55rem;
+      padding: 0.25rem 0.6rem;
       border-radius: 999px;
       background: var(--tag-bg);
       color: var(--tag-txt);
     }
 
     /* ── Divider ── */
-    hr { border: none; border-top: 1px solid var(--border); margin: 1rem 0; }
+    hr { border: none; border-top: 1px solid var(--border); margin: 1.25rem 0; }
 
     /* ── Scrollbar ── */
     #sidebar::-webkit-scrollbar { width: 4px; }
     #sidebar::-webkit-scrollbar-thumb { background: #3a4560; border-radius: 2px; }
+
+
+    /* =========================================================
+       DESKTOP RESPONSIVE SCALING (min-width: 768px)
+    ========================================================= */
+    @media (min-width: 768px) {
+      :root {
+        font-size: 15px; /* Scale up slightly */
+      }
+
+      body {
+        flex-direction: row; /* Side-by-side layout */
+      }
+
+      /* Hide mobile elements */
+      .mobile-header,
+      .sidebar-overlay,
+      .close-sidebar {
+        display: none !important;
+      }
+
+      /* Desktop Sidebar */
+      #sidebar {
+        position: sticky;
+        left: 0; /* Reset slide-out */
+        width: 240px;
+        min-width: 240px;
+        box-shadow: none;
+        padding-bottom: 2rem;
+      }
+      #sidebar .logo h1 {
+        padding-right: 0;
+      }
+      #sidebar nav a {
+        padding: 0.42rem 1.25rem;
+        font-size: 0.8rem;
+      }
+
+      /* Desktop Main Content */
+      #main {
+        padding: 2rem 2.5rem 4rem;
+        max-width: 900px;
+        margin: 0 auto;
+      }
+      .page-header h1 {
+        font-size: 1.6rem;
+      }
+      .module-body {
+        padding: 1.25rem 1.5rem;
+      }
+      
+      /* Grid and Columns Desktop */
+      .awareness-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.65rem;
+      }
+      .two-col {
+        columns: 2;
+        column-gap: 1.5rem;
+      }
+
+      /* Table tweaks for desktop */
+      .table-responsive {
+        border: none;
+        overflow-x: visible; /* Generally doesn't need scrolling on desktop */
+      }
+      table {
+        min-width: auto;
+      }
+      
+      [id] { scroll-margin-top: 1.5rem; } /* Reset anchor spacing for desktop */
+    }
   </style>
 </head>
 <body>
 
-<!-- ══════════════════════════════════════════
-     SIDEBAR
-══════════════════════════════════════════ -->
+<header class="mobile-header">
+  <h1>ITIL 4 Foundation</h1>
+  <button class="menu-toggle" onclick="toggleSidebar()" aria-label="Open Menu">
+    ☰
+  </button>
+</header>
+
+<div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
 <aside id="sidebar">
+  <button class="close-sidebar" onclick="toggleSidebar()" aria-label="Close Menu">✕</button>
   <div class="logo">
     <h1>ITIL 4 Foundation</h1>
     <p>Study Notes — Concise Edition</p>
   </div>
   <nav>
     <div class="section-label">Overview</div>
-    <a href="#exam">Exam Overview</a>
+    <a href="#exam" onclick="closeSidebarOnMobile()">Exam Overview</a>
 
     <div class="section-label">Module 1 — Service Mgmt</div>
-    <a href="#m1-value" class="sub">1.1 Value &amp; Key Definitions</a>
-    <a href="#m1-stakeholders" class="sub">1.2 Stakeholders &amp; Roles</a>
-    <a href="#m1-offerings" class="sub">1.3 Service Offerings (GAS)</a>
-    <a href="#m1-value-creation" class="sub">1.4 Creating Value</a>
-    <a href="#m1-utility" class="sub">1.5 Utility &amp; Warranty</a>
+    <a href="#m1-value" class="sub" onclick="closeSidebarOnMobile()">1.1 Value &amp; Key Definitions</a>
+    <a href="#m1-stakeholders" class="sub" onclick="closeSidebarOnMobile()">1.2 Stakeholders &amp; Roles</a>
+    <a href="#m1-offerings" class="sub" onclick="closeSidebarOnMobile()">1.3 Service Offerings (GAS)</a>
+    <a href="#m1-value-creation" class="sub" onclick="closeSidebarOnMobile()">1.4 Creating Value</a>
+    <a href="#m1-utility" class="sub" onclick="closeSidebarOnMobile()">1.5 Utility &amp; Warranty</a>
 
     <div class="section-label">Module 2 — ITIL 4 Concepts</div>
-    <a href="#m2-4d" class="sub">2.1 Four Dimensions</a>
-    <a href="#m2-svs" class="sub">2.2 Service Value System</a>
-    <a href="#m2-svc" class="sub">2.3 Service Value Chain</a>
-    <a href="#m2-gov" class="sub">2.4 Governance</a>
+    <a href="#m2-4d" class="sub" onclick="closeSidebarOnMobile()">2.1 Four Dimensions</a>
+    <a href="#m2-svs" class="sub" onclick="closeSidebarOnMobile()">2.2 Service Value System</a>
+    <a href="#m2-svc" class="sub" onclick="closeSidebarOnMobile()">2.3 Service Value Chain</a>
+    <a href="#m2-gov" class="sub" onclick="closeSidebarOnMobile()">2.4 Governance</a>
 
     <div class="section-label">Module 3 — Guiding Principles</div>
-    <a href="#gp1" class="sub">1. Focus on Value</a>
-    <a href="#gp2" class="sub">2. Start Where You Are</a>
-    <a href="#gp3" class="sub">3. Progress Iteratively</a>
-    <a href="#gp4" class="sub">4. Collaborate &amp; Visibility</a>
-    <a href="#gp5" class="sub">5. Think Holistically</a>
-    <a href="#gp6" class="sub">6. Keep It Simple</a>
-    <a href="#gp7" class="sub">7. Optimize &amp; Automate</a>
+    <a href="#gp1" class="sub" onclick="closeSidebarOnMobile()">1. Focus on Value</a>
+    <a href="#gp2" class="sub" onclick="closeSidebarOnMobile()">2. Start Where You Are</a>
+    <a href="#gp3" class="sub" onclick="closeSidebarOnMobile()">3. Progress Iteratively</a>
+    <a href="#gp4" class="sub" onclick="closeSidebarOnMobile()">4. Collaborate &amp; Visibility</a>
+    <a href="#gp5" class="sub" onclick="closeSidebarOnMobile()">5. Think Holistically</a>
+    <a href="#gp6" class="sub" onclick="closeSidebarOnMobile()">6. Keep It Simple</a>
+    <a href="#gp7" class="sub" onclick="closeSidebarOnMobile()">7. Optimize &amp; Automate</a>
 
     <div class="section-label">Module 4 — Practices</div>
-    <a href="#awareness" class="sub">Awareness-Level (8)</a>
-    <a href="#fulldepth" class="sub">Full Depth (7)</a>
-    <a href="#p1" class="sub">↳ Incident Management</a>
-    <a href="#p2" class="sub">↳ Service Request Mgmt</a>
-    <a href="#p3" class="sub">↳ Service Desk</a>
-    <a href="#p4" class="sub">↳ Problem Management</a>
-    <a href="#p5" class="sub">↳ Continual Improvement</a>
-    <a href="#p6" class="sub">↳ Service Level Mgmt</a>
-    <a href="#p7" class="sub">↳ Change Enablement</a>
+    <a href="#awareness" class="sub" onclick="closeSidebarOnMobile()">Awareness-Level (8)</a>
+    <a href="#fulldepth" class="sub" onclick="closeSidebarOnMobile()">Full Depth (7)</a>
+    <a href="#p1" class="sub" onclick="closeSidebarOnMobile()">↳ Incident Management</a>
+    <a href="#p2" class="sub" onclick="closeSidebarOnMobile()">↳ Service Request Mgmt</a>
+    <a href="#p3" class="sub" onclick="closeSidebarOnMobile()">↳ Service Desk</a>
+    <a href="#p4" class="sub" onclick="closeSidebarOnMobile()">↳ Problem Management</a>
+    <a href="#p5" class="sub" onclick="closeSidebarOnMobile()">↳ Continual Improvement</a>
+    <a href="#p6" class="sub" onclick="closeSidebarOnMobile()">↳ Service Level Mgmt</a>
+    <a href="#p7" class="sub" onclick="closeSidebarOnMobile()">↳ Change Enablement</a>
 
     <div class="section-label">Reference</div>
-    <a href="#quickref">Quick Definitions</a>
-    <a href="#examtips">Exam Tips</a>
+    <a href="#quickref" onclick="closeSidebarOnMobile()">Quick Definitions</a>
+    <a href="#examtips" onclick="closeSidebarOnMobile()">Exam Tips</a>
   </nav>
 </aside>
 
-<!-- ══════════════════════════════════════════
-     MAIN CONTENT
-══════════════════════════════════════════ -->
 <main id="main">
 
   <div class="page-header">
@@ -451,27 +604,26 @@
     </div>
   </div>
 
-  <!-- ═══ EXAM OVERVIEW ═══ -->
   <div class="module" id="exam">
     <div class="module-header gray">Exam Overview</div>
     <div class="module-body">
-      <table>
-        <tr><th>Detail</th><th>Info</th></tr>
-        <tr><td>Questions</td><td>40 multiple-choice</td></tr>
-        <tr><td>Duration</td><td>60 minutes · Closed book</td></tr>
-        <tr><td>Pass mark</td><td><strong>26 / 40 (65%)</strong></td></tr>
-        <tr><td>Practices in scope</td><td>15 total — 7 full depth, 8 awareness only</td></tr>
-        <tr><td>Prerequisite for</td><td>ITIL Practice Manager, Managing Professional, Strategic Leader, Specialist extensions</td></tr>
-      </table>
+      <div class="table-responsive">
+        <table>
+          <tr><th>Detail</th><th>Info</th></tr>
+          <tr><td>Questions</td><td>40 multiple-choice</td></tr>
+          <tr><td>Duration</td><td>60 minutes · Closed book</td></tr>
+          <tr><td>Pass mark</td><td><strong>26 / 40 (65%)</strong></td></tr>
+          <tr><td>Practices in scope</td><td>15 total — 7 full depth, 8 awareness only</td></tr>
+          <tr><td>Prerequisite for</td><td>ITIL Practice Manager, Managing Professional, Strategic Leader, Specialist extensions</td></tr>
+        </table>
+      </div>
     </div>
   </div>
 
-  <!-- ═══ MODULE 1 ═══ -->
   <div class="module">
     <div class="module-header">Module 1 — Key Concepts of Service Management</div>
     <div class="module-body">
 
-      <!-- 1.1 Value -->
       <div class="section" id="m1-value">
         <h2 class="section-title">1.1 Value &amp; Key Definitions</h2>
         <div class="def"><strong>Value:</strong> The <span class="hl">PERCEIVED BENEFITS, USEFULNESS, AND IMPORTANCE</span> of something. Value is <em>subjective</em> — subject to stakeholder perception.</div>
@@ -484,53 +636,57 @@
         </div>
       </div>
 
-      <!-- 1.2 Stakeholders -->
       <div class="section" id="m1-stakeholders">
         <h2 class="section-title">1.2 Stakeholders &amp; Service Consumer Roles</h2>
-        <p style="font-size:0.82rem;margin-bottom:0.5rem">Stakeholders fall into three categories: <strong>Service Providers, Service Consumers, Other Stakeholders</strong>.</p>
-        <table>
-          <tr><th>Role</th><th>Definition</th></tr>
-          <tr><td><strong>Service Provider</strong></td><td>Creates and delivers services. Can be internal (IT dept) or external (third-party).</td></tr>
-          <tr><td><strong>Customer</strong></td><td>Defines <span class="hl">REQUIREMENTS</span> and takes <span class="hl">RESPONSIBILITY</span> for outcomes of service consumption.</td></tr>
-          <tr><td><strong>User</strong></td><td>A person who <span class="hl">USES</span> services day-to-day.</td></tr>
-          <tr><td><strong>Sponsor</strong></td><td>A person who <span class="hl">AUTHORIZES BUDGET</span> for service consumption.</td></tr>
-        </table>
+        <p style="font-size:0.85rem;margin-bottom:0.5rem">Stakeholders fall into three categories: <strong>Service Providers, Service Consumers, Other Stakeholders</strong>.</p>
+        <div class="table-responsive">
+          <table>
+            <tr><th>Role</th><th>Definition</th></tr>
+            <tr><td><strong>Service Provider</strong></td><td>Creates and delivers services. Can be internal (IT dept) or external (third-party).</td></tr>
+            <tr><td><strong>Customer</strong></td><td>Defines <span class="hl">REQUIREMENTS</span> and takes <span class="hl">RESPONSIBILITY</span> for outcomes of service consumption.</td></tr>
+            <tr><td><strong>User</strong></td><td>A person who <span class="hl">USES</span> services day-to-day.</td></tr>
+            <tr><td><strong>Sponsor</strong></td><td>A person who <span class="hl">AUTHORIZES BUDGET</span> for service consumption.</td></tr>
+          </table>
+        </div>
       </div>
 
-      <!-- 1.3 Service Offerings -->
       <div class="section" id="m1-offerings">
         <h2 class="section-title">1.3 Service Offerings (GAS)</h2>
         <div class="def"><strong>Product:</strong> A <span class="hl">CONFIGURATION</span> of an organization's resources designed to offer value. Typically complex; not fully visible to consumer.</div>
         <div class="def"><strong>Service Offering:</strong> A formal description of one or more services for a <span class="hl">TARGET CONSUMER GROUP</span>. Contains three components:</div>
-        <table>
-          <tr><th>Component</th><th>Who owns it?</th><th>Example</th></tr>
-          <tr><td><strong>G — Goods</strong></td><td>Consumer takes OWNERSHIP</td><td>Mobile phone, physical server</td></tr>
-          <tr><td><strong>A — Access to Resources</strong></td><td>Remains under PROVIDER'S control</td><td>Cloud storage, mobile network access</td></tr>
-          <tr><td><strong>S — Service Actions</strong></td><td>Performed BY the provider</td><td>User support, equipment replacement</td></tr>
-        </table>
+        <div class="table-responsive">
+          <table>
+            <tr><th>Component</th><th>Who owns it?</th><th>Example</th></tr>
+            <tr><td><strong>G — Goods</strong></td><td>Consumer takes OWNERSHIP</td><td>Mobile phone, physical server</td></tr>
+            <tr><td><strong>A — Access to Resources</strong></td><td>Remains under PROVIDER'S control</td><td>Cloud storage, mobile network access</td></tr>
+            <tr><td><strong>S — Service Actions</strong></td><td>Performed BY the provider</td><td>User support, equipment replacement</td></tr>
+          </table>
+        </div>
       </div>
 
-      <!-- 1.4 Creating Value -->
       <div class="section" id="m1-value-creation">
         <h2 class="section-title">1.4 Creating Value with Services</h2>
         <div class="def"><strong>Output:</strong> A <span class="hl">TANGIBLE OR INTANGIBLE deliverable</span> of an activity — <em>what is produced</em>.</div>
         <div class="def"><strong>Outcome:</strong> A <span class="hl">RESULT for a stakeholder</span>, enabled by one or more outputs — <em>the result achieved</em>.</div>
-        <table>
-          <tr><th>Relationship Type</th><th>Description</th></tr>
-          <tr><td><strong>Service Provision</strong></td><td>Activities performed TO PROVIDE services (manage resources, ensure access, fulfill service actions, SLM, CI)</td></tr>
-          <tr><td><strong>Service Consumption</strong></td><td>Activities performed TO CONSUME services (manage consumer resources, perform service actions, receive goods)</td></tr>
-          <tr><td><strong>Service Relationship Management</strong></td><td>JOINT activities by both provider &amp; consumer to ensure continual value co-creation</td></tr>
-        </table>
+        <div class="table-responsive">
+          <table>
+            <tr><th>Relationship Type</th><th>Description</th></tr>
+            <tr><td><strong>Service Provision</strong></td><td>Activities performed TO PROVIDE services (manage resources, ensure access, fulfill service actions, SLM, CI)</td></tr>
+            <tr><td><strong>Service Consumption</strong></td><td>Activities performed TO CONSUME services (manage consumer resources, perform service actions, receive goods)</td></tr>
+            <tr><td><strong>Service Relationship Management</strong></td><td>JOINT activities by both provider &amp; consumer to ensure continual value co-creation</td></tr>
+          </table>
+        </div>
       </div>
 
-      <!-- 1.5 Utility & Warranty -->
       <div class="section" id="m1-utility">
         <h2 class="section-title">1.5 Costs, Risks, Utility &amp; Warranty</h2>
-        <table>
-          <tr><th>Concept</th><th>Meaning</th><th>Memory hook</th></tr>
-          <tr><td><strong>Utility</strong></td><td>Functionality offered — what the service DOES. Must support performance or remove constraints.</td><td><span class="hl">Fit for PURPOSE</span></td></tr>
-          <tr><td><strong>Warranty</strong></td><td>Assurance it meets agreed requirements — HOW it performs (availability, capacity, security, continuity).</td><td><span class="hl">Fit for USE</span></td></tr>
-        </table>
+        <div class="table-responsive">
+          <table>
+            <tr><th>Concept</th><th>Meaning</th><th>Memory hook</th></tr>
+            <tr><td><strong>Utility</strong></td><td>Functionality offered — what the service DOES. Must support performance or remove constraints.</td><td><span class="hl">Fit for PURPOSE</span></td></tr>
+            <tr><td><strong>Warranty</strong></td><td>Assurance it meets agreed requirements — HOW it performs (availability, capacity, security, continuity).</td><td><span class="hl">Fit for USE</span></td></tr>
+          </table>
+        </div>
         <div class="callout tip"><div class="label tip">Key Point</div>BOTH utility AND warranty are required for a service to deliver value. Neither alone is enough.</div>
         <h3 class="sub-title">Two types of Cost (consumer perspective)</h3>
         <ul class="kp">
@@ -547,76 +703,77 @@
     </div>
   </div>
 
-  <!-- ═══ MODULE 2 ═══ -->
   <div class="module">
     <div class="module-header green">Module 2 — Key Concepts of ITIL 4</div>
     <div class="module-body">
 
-      <!-- 2.1 Four Dimensions -->
       <div class="section" id="m2-4d">
         <h2 class="section-title">2.1 The Four Dimensions of Service Management <span class="hl" style="font-size:0.75em">OIPV</span></h2>
-        <p style="font-size:0.82rem;margin-bottom:0.75rem">The four dimensions DO NOT have sharp boundaries and may <strong>overlap</strong>. External <strong>PESTLE</strong> factors (Political, Economic, Social, Technological, Legal, Environmental) constrain all four.</p>
-        <table>
-          <tr><th>Dimension</th><th>Covers</th><th>Key Points</th></tr>
-          <tr>
-            <td><strong>1. Organizations &amp; People</strong></td>
-            <td>Structure, culture, roles, competencies</td>
-            <td>Leaders must champion values; trust &amp; transparency essential; avoid silos; need for agility</td>
-          </tr>
-          <tr>
-            <td><strong>2. Information &amp; Technology</strong></td>
-            <td>Information needed + technologies used</td>
-            <td>AI, cloud, blockchain; GDPR compliance; information: available, reliable, accurate, timely</td>
-          </tr>
-          <tr>
-            <td><strong>3. Partners &amp; Suppliers</strong></td>
-            <td>Relationships with other organizations, contracts</td>
-            <td>Factors: strategic focus, culture, cost, expertise, regulations. SIAM coordinates multiple suppliers.</td>
-          </tr>
-          <tr>
-            <td><strong>4. Value Streams &amp; Processes</strong></td>
-            <td>How parts of org work together to enable value</td>
-            <td>Value streams identify waste; processes define input→output sequences</td>
-          </tr>
-        </table>
+        <p style="font-size:0.85rem;margin-bottom:0.75rem">The four dimensions DO NOT have sharp boundaries and may <strong>overlap</strong>. External <strong>PESTLE</strong> factors (Political, Economic, Social, Technological, Legal, Environmental) constrain all four.</p>
+        <div class="table-responsive">
+          <table>
+            <tr><th>Dimension</th><th>Covers</th><th>Key Points</th></tr>
+            <tr>
+              <td><strong>1. Organizations &amp; People</strong></td>
+              <td>Structure, culture, roles, competencies</td>
+              <td>Leaders must champion values; trust &amp; transparency essential; avoid silos; need for agility</td>
+            </tr>
+            <tr>
+              <td><strong>2. Information &amp; Technology</strong></td>
+              <td>Information needed + technologies used</td>
+              <td>AI, cloud, blockchain; GDPR compliance; information: available, reliable, accurate, timely</td>
+            </tr>
+            <tr>
+              <td><strong>3. Partners &amp; Suppliers</strong></td>
+              <td>Relationships with other organizations, contracts</td>
+              <td>Factors: strategic focus, culture, cost, expertise, regulations. SIAM coordinates multiple suppliers.</td>
+            </tr>
+            <tr>
+              <td><strong>4. Value Streams &amp; Processes</strong></td>
+              <td>How parts of org work together to enable value</td>
+              <td>Value streams identify waste; processes define input→output sequences</td>
+            </tr>
+          </table>
+        </div>
         <div class="def" style="margin-top:0.75rem"><strong>SIAM:</strong> Service Integration and Management — using a specially established integrator to ensure service relationships are properly coordinated.</div>
       </div>
 
-      <!-- 2.2 SVS -->
       <div class="section" id="m2-svs">
         <h2 class="section-title">2.2 The ITIL Service Value System (SVS)</h2>
-        <p style="font-size:0.82rem;margin-bottom:0.6rem">Input → <strong>SVS</strong> → Output of <span class="hl">VALUE</span><br>Inputs: <strong>Opportunity</strong> (options to add value) + <strong>Demand</strong> (need for products/services)</p>
-        <table>
-          <tr><th>#</th><th>SVS Component</th><th>Description</th></tr>
-          <tr><td>1</td><td><strong>Guiding Principles</strong></td><td>Recommendations guiding the org in ALL circumstances</td></tr>
-          <tr><td>2</td><td><strong>Governance</strong></td><td>Directed and controlled via: Evaluate → Direct → Monitor</td></tr>
-          <tr><td>3</td><td><strong>Service Value Chain</strong></td><td>Interconnected activities to deliver valuable products/services</td></tr>
-          <tr><td>4</td><td><strong>Practices</strong></td><td>Organizational resources designed for performing work</td></tr>
-          <tr><td>5</td><td><strong>Continual Improvement</strong></td><td>Recurring activity at ALL levels to meet stakeholder expectations</td></tr>
-        </table>
+        <p style="font-size:0.85rem;margin-bottom:0.6rem">Input → <strong>SVS</strong> → Output of <span class="hl">VALUE</span><br>Inputs: <strong>Opportunity</strong> (options to add value) + <strong>Demand</strong> (need for products/services)</p>
+        <div class="table-responsive">
+          <table>
+            <tr><th>#</th><th>SVS Component</th><th>Description</th></tr>
+            <tr><td>1</td><td><strong>Guiding Principles</strong></td><td>Recommendations guiding the org in ALL circumstances</td></tr>
+            <tr><td>2</td><td><strong>Governance</strong></td><td>Directed and controlled via: Evaluate → Direct → Monitor</td></tr>
+            <tr><td>3</td><td><strong>Service Value Chain</strong></td><td>Interconnected activities to deliver valuable products/services</td></tr>
+            <tr><td>4</td><td><strong>Practices</strong></td><td>Organizational resources designed for performing work</td></tr>
+            <tr><td>5</td><td><strong>Continual Improvement</strong></td><td>Recurring activity at ALL levels to meet stakeholder expectations</td></tr>
+          </table>
+        </div>
         <div class="callout"><div class="label warn">Warn</div><strong>Organizational Silos</strong> — prevent access to info, reduce efficiency, increase cost and risk. The SVS architecture discourages siloed working.</div>
       </div>
 
-      <!-- 2.3 SVC -->
       <div class="section" id="m2-svc">
         <h2 class="section-title">2.3 The Service Value Chain (SVC) <span class="hl" style="font-size:0.75em">PIEDOD</span></h2>
-        <p style="font-size:0.82rem;margin-bottom:0.6rem">The SVC is the <strong>central element</strong> of the SVS. 6 activities that lead to value creation:</p>
-        <table>
-          <tr><th>Activity</th><th>Purpose</th></tr>
-          <tr><td><strong>Plan</strong></td><td>Ensure shared understanding of vision, current status &amp; improvement direction across all 4 dimensions</td></tr>
-          <tr><td><strong>Improve</strong></td><td>Ensure continual improvement of products, services &amp; practices across all activities</td></tr>
-          <tr><td><strong>Engage</strong></td><td>Understand stakeholder needs; maintain transparency and good relationships</td></tr>
-          <tr><td><strong>Design &amp; Transition</strong></td><td>Ensure products/services meet stakeholder expectations for quality, cost &amp; time to market</td></tr>
-          <tr><td><strong>Obtain/Build</strong></td><td>Ensure service components available when needed and meet agreed specifications</td></tr>
-          <tr><td><strong>Deliver &amp; Support</strong></td><td>Ensure services are delivered &amp; supported according to agreed specs</td></tr>
-        </table>
+        <p style="font-size:0.85rem;margin-bottom:0.6rem">The SVC is the <strong>central element</strong> of the SVS. 6 activities that lead to value creation:</p>
+        <div class="table-responsive">
+          <table>
+            <tr><th>Activity</th><th>Purpose</th></tr>
+            <tr><td><strong>Plan</strong></td><td>Ensure shared understanding of vision, current status &amp; improvement direction across all 4 dimensions</td></tr>
+            <tr><td><strong>Improve</strong></td><td>Ensure continual improvement of products, services &amp; practices across all activities</td></tr>
+            <tr><td><strong>Engage</strong></td><td>Understand stakeholder needs; maintain transparency and good relationships</td></tr>
+            <tr><td><strong>Design &amp; Transition</strong></td><td>Ensure products/services meet stakeholder expectations for quality, cost &amp; time to market</td></tr>
+            <tr><td><strong>Obtain/Build</strong></td><td>Ensure service components available when needed and meet agreed specifications</td></tr>
+            <tr><td><strong>Deliver &amp; Support</strong></td><td>Ensure services are delivered &amp; supported according to agreed specs</td></tr>
+          </table>
+        </div>
         <div class="callout tip"><div class="label tip">Value Streams</div>Specific combinations of activities for a particular scenario. Not all 6 must be included. An activity can be used <strong>multiple times</strong> in one stream.</div>
       </div>
 
-      <!-- 2.4 Governance -->
       <div class="section" id="m2-gov">
         <h2 class="section-title">2.4 Governance</h2>
-        <p style="font-size:0.82rem;margin-bottom:0.5rem">The governing body (board, executives) is <strong>accountable at the highest level</strong> for performance and compliance.</p>
+        <p style="font-size:0.85rem;margin-bottom:0.5rem">The governing body (board, executives) is <strong>accountable at the highest level</strong> for performance and compliance.</p>
         <div class="svc-pills">
           <span class="pill">1. Evaluate — strategy &amp; portfolios</span>
           <span class="pill">2. Direct — assign responsibility &amp; implement strategy</span>
@@ -627,17 +784,15 @@
     </div>
   </div>
 
-  <!-- ═══ MODULE 3 ═══ -->
   <div class="module">
     <div class="module-header orange">Module 3 — The Seven Guiding Principles</div>
     <div class="module-body">
 
       <div class="def" style="margin-bottom:1rem"><strong>Guiding Principle:</strong> A recommendation that guides an organization in <span class="hl">ALL CIRCUMSTANCES</span>, regardless of changes in goals, strategies, or structure. Universal and enduring.</div>
 
-      <!-- GP1 -->
       <div class="section" id="gp1">
         <h2 class="section-title">1. Focus on Value</h2>
-        <p style="font-size:0.82rem"><strong>All activities</strong> should link, directly or indirectly, to value for customers and stakeholders.</p>
+        <p style="font-size:0.85rem"><strong>All activities</strong> should link, directly or indirectly, to value for customers and stakeholders.</p>
         <ul class="kp">
           <li>Know WHO the consumer is (customer, user, sponsor)</li>
           <li>Understand WHAT is valuable to them (expected outcomes, CX/UX)</li>
@@ -647,10 +802,9 @@
       </div>
       <hr>
 
-      <!-- GP2 -->
       <div class="section" id="gp2">
         <h2 class="section-title">2. Start Where You Are</h2>
-        <p style="font-size:0.82rem"><em>"Do not throw the baby out with the bathwater."</em> — Leverage what already exists.</p>
+        <p style="font-size:0.85rem"><em>"Do not throw the baby out with the bathwater."</em> — Leverage what already exists.</p>
         <ul class="kp">
           <li>Measure and observe directly — don't rely solely on reports</li>
           <li>Get data from the <strong>source</strong>; have someone with no prior knowledge observe</li>
@@ -660,10 +814,9 @@
       </div>
       <hr>
 
-      <!-- GP3 -->
       <div class="section" id="gp3">
         <h2 class="section-title">3. Progress Iteratively with Feedback</h2>
-        <p style="font-size:0.82rem"><em>"How do you eat an elephant? One bite at a time."</em> — Organize work into smaller, manageable sections.</p>
+        <p style="font-size:0.85rem"><em>"How do you eat an elephant? One bite at a time."</em> — Organize work into smaller, manageable sections.</p>
         <ul class="kp">
           <li>Seek feedback <strong>before, throughout, and after</strong> each iteration</li>
           <li>Greater flexibility; faster response; detect failure earlier; better quality</li>
@@ -673,10 +826,9 @@
       </div>
       <hr>
 
-      <!-- GP4 -->
       <div class="section" id="gp4">
         <h2 class="section-title">4. Collaborate and Promote Visibility</h2>
-        <p style="font-size:0.82rem"><em>"Inclusion is always better than exclusion."</em> — Right people in correct roles = better buy-in and relevance.</p>
+        <p style="font-size:0.85rem"><em>"Inclusion is always better than exclusion."</em> — Right people in correct roles = better buy-in and relevance.</p>
         <ul class="kp">
           <li>Cooperation &gt; isolated/silo work; creative solutions from unexpected sources</li>
           <li>Poor visibility → poor decision-making → hampers improvement</li>
@@ -687,10 +839,9 @@
       </div>
       <hr>
 
-      <!-- GP5 -->
       <div class="section" id="gp5">
         <h2 class="section-title">5. Think and Work Holistically</h2>
-        <p style="font-size:0.82rem"><em>"Gain a systemic understanding."</em> — No service, practice, or department stands alone.</p>
+        <p style="font-size:0.85rem"><em>"Gain a systemic understanding."</em> — No service, practice, or department stands alone.</p>
         <ul class="kp">
           <li>Alteration of one element can <strong>impact others</strong> — identify, analyze, plan</li>
           <li>Look for patterns in needs and interactions</li>
@@ -700,10 +851,9 @@
       </div>
       <hr>
 
-      <!-- GP6 -->
       <div class="section" id="gp6">
         <h2 class="section-title">6. Keep It Simple and Practical</h2>
-        <p style="font-size:0.82rem"><em>"Simplicity is the ultimate sophistication."</em> — Minimum steps to accomplish an objective. Eliminate anything that fails to provide value.</p>
+        <p style="font-size:0.85rem"><em>"Simplicity is the ultimate sophistication."</em> — Minimum steps to accomplish an objective. Eliminate anything that fails to provide value.</p>
         <ul class="kp">
           <li>Do NOT solve every exception — design rules for <strong>general exceptions</strong></li>
           <li>Do fewer things but do them <strong>better</strong></li>
@@ -713,10 +863,9 @@
       </div>
       <hr>
 
-      <!-- GP7 -->
       <div class="section" id="gp7">
         <h2 class="section-title">7. Optimize and Automate</h2>
-        <p style="font-size:0.82rem">Maximize value of human and technical resources. Technology handles repetitive tasks; humans focus on <strong>complex decision-making</strong>.</p>
+        <p style="font-size:0.85rem">Maximize value of human and technical resources. Technology handles repetitive tasks; humans focus on <strong>complex decision-making</strong>.</p>
         <div class="callout tip"><div class="label tip">Rule</div><strong>Optimize first, then automate.</strong> Automating a suboptimal process is unlikely to achieve the desired outcome.</div>
         <h3 class="sub-title">Path to Optimization (6 steps)</h3>
         <ul class="kp">
@@ -732,22 +881,22 @@
     </div>
   </div>
 
-  <!-- ═══ MODULE 4 ═══ -->
   <div class="module">
     <div class="module-header purple">Module 4 — ITIL 4 Management Practices</div>
     <div class="module-body">
 
       <div class="def" style="margin-bottom:1rem"><strong>Management Practice:</strong> A <span class="hl">SET OF ORGANIZATIONAL RESOURCES</span> designed for performing work or accomplishing an objective.</div>
 
-      <table style="margin-bottom:1rem">
-        <tr><th>Category</th><th>Total in ITIL 4</th><th>In Scope (15)</th></tr>
-        <tr><td>General Management Practices</td><td>14</td><td>4</td></tr>
-        <tr><td>Service Management Practices</td><td>17</td><td>10</td></tr>
-        <tr><td>Technical Management Practices</td><td>3</td><td>1</td></tr>
-        <tr><td><strong>Total</strong></td><td><strong>34</strong></td><td><strong>15</strong></td></tr>
-      </table>
+      <div class="table-responsive" style="margin-bottom:1rem">
+        <table>
+          <tr><th>Category</th><th>Total in ITIL 4</th><th>In Scope (15)</th></tr>
+          <tr><td>General Management Practices</td><td>14</td><td>4</td></tr>
+          <tr><td>Service Management Practices</td><td>17</td><td>10</td></tr>
+          <tr><td>Technical Management Practices</td><td>3</td><td>1</td></tr>
+          <tr><td><strong>Total</strong></td><td><strong>34</strong></td><td><strong>15</strong></td></tr>
+        </table>
+      </div>
 
-      <!-- AWARENESS LEVEL -->
       <div class="section" id="awareness">
         <h2 class="section-title">Awareness-Level Practices (8) — Purpose Statements</h2>
         <div class="awareness-grid">
@@ -807,15 +956,13 @@
         </div>
       </div>
 
-      <!-- FULL DEPTH -->
       <div class="section" id="fulldepth">
         <h2 class="section-title">Full-Depth Practices (7)</h2>
 
-        <!-- P1: Incident Management -->
         <div class="practice" id="p1">
           <div class="practice-header open" onclick="togglePractice(this)">
             <div class="practice-num">1</div>
-            <div class="practice-name">Incident Management <span style="font-weight:400;color:var(--muted);font-size:0.78rem">— Service Management</span></div>
+            <div class="practice-name">Incident Management <span style="font-weight:400;color:var(--muted);font-size:0.8rem">— Service Management</span></div>
             <div class="practice-arrow">▶</div>
           </div>
           <div class="practice-body open">
@@ -829,23 +976,24 @@
               <li><strong>SWARMING:</strong> Many stakeholders work together initially until best person is clear</li>
             </ul>
             <h3 class="sub-title">Escalation Tiers</h3>
-            <table>
-              <tr><th>Tier</th><th>Resolution Path</th></tr>
-              <tr><td>Tier 0</td><td>Self-help — users resolve themselves (<strong>Shift Left</strong>)</td></tr>
-              <tr><td>Tier 1</td><td>Service desk resolution</td></tr>
-              <tr><td>Tier 2</td><td>Support team escalation (by category)</td></tr>
-              <tr><td>Tier 3</td><td>Suppliers / partners</td></tr>
-              <tr><td>Major</td><td>Temporary collaborative team; possible disaster recovery</td></tr>
-            </table>
+            <div class="table-responsive">
+              <table>
+                <tr><th>Tier</th><th>Resolution Path</th></tr>
+                <tr><td>Tier 0</td><td>Self-help — users resolve themselves (<strong>Shift Left</strong>)</td></tr>
+                <tr><td>Tier 1</td><td>Service desk resolution</td></tr>
+                <tr><td>Tier 2</td><td>Support team escalation (by category)</td></tr>
+                <tr><td>Tier 3</td><td>Suppliers / partners</td></tr>
+                <tr><td>Major</td><td>Temporary collaborative team; possible disaster recovery</td></tr>
+              </table>
+            </div>
             <div class="svc-pills" style="margin-top:0.6rem"><strong style="font-size:0.75rem;color:var(--muted)">SVC:</strong><span class="pill">Engage</span><span class="pill">Deliver &amp; Support</span></div>
           </div>
         </div>
 
-        <!-- P2: Service Request -->
         <div class="practice" id="p2">
           <div class="practice-header" onclick="togglePractice(this)">
             <div class="practice-num">2</div>
-            <div class="practice-name">Service Request Management <span style="font-weight:400;color:var(--muted);font-size:0.78rem">— Service Management</span></div>
+            <div class="practice-name">Service Request Management <span style="font-weight:400;color:var(--muted);font-size:0.8rem">— Service Management</span></div>
             <div class="practice-arrow">▶</div>
           </div>
           <div class="practice-body">
@@ -862,11 +1010,10 @@
           </div>
         </div>
 
-        <!-- P3: Service Desk -->
         <div class="practice" id="p3">
           <div class="practice-header" onclick="togglePractice(this)">
             <div class="practice-num">3</div>
-            <div class="practice-name">Service Desk <span style="font-weight:400;color:var(--muted);font-size:0.78rem">— Service Management</span></div>
+            <div class="practice-name">Service Desk <span style="font-weight:400;color:var(--muted);font-size:0.8rem">— Service Management</span></div>
             <div class="practice-arrow">▶</div>
           </div>
           <div class="practice-body">
@@ -877,13 +1024,15 @@
               <li>Value through empathetic, informed link between provider and users</li>
             </ul>
             <h3 class="sub-title">Channels &amp; Types</h3>
-            <table>
-              <tr><th>Channels</th><th>Types</th></tr>
-              <tr>
-                <td>Phone · Portal/Mobile app · Chat/Chatbots · Email · Walk-in · Text/Social media</td>
-                <td><strong>Centralized</strong> — physical single location<br><strong>Virtual</strong> — agents in multiple locations (often cloud-based)</td>
-              </tr>
-            </table>
+            <div class="table-responsive">
+              <table>
+                <tr><th>Channels</th><th>Types</th></tr>
+                <tr>
+                  <td>Phone · Portal/Mobile app · Chat/Chatbots · Email · Walk-in · Text/Social media</td>
+                  <td><strong>Centralized</strong> — physical single location<br><strong>Virtual</strong> — agents in multiple locations (often cloud-based)</td>
+                </tr>
+              </table>
+            </div>
             <h3 class="sub-title">Key Skills</h3>
             <div class="svc-pills">
               <span class="pill">Incident analysis &amp; prioritization</span>
@@ -896,74 +1045,79 @@
           </div>
         </div>
 
-        <!-- P4: Problem Management -->
         <div class="practice" id="p4">
           <div class="practice-header" onclick="togglePractice(this)">
             <div class="practice-num">4</div>
-            <div class="practice-name">Problem Management <span style="font-weight:400;color:var(--muted);font-size:0.78rem">— Service Management</span></div>
+            <div class="practice-name">Problem Management <span style="font-weight:400;color:var(--muted);font-size:0.8rem">— Service Management</span></div>
             <div class="practice-arrow">▶</div>
           </div>
           <div class="practice-body">
             <div class="practice-purpose"><strong>Purpose:</strong> To <span class="hl">REDUCE THE LIKELIHOOD AND IMPACT</span> of incidents by identifying actual and potential causes and managing <span class="hl">WORKAROUNDS</span> and <span class="hl">KNOWN ERRORS</span>.</div>
-            <table>
-              <tr><th>Term</th><th>Definition</th></tr>
-              <tr><td><strong>Problem</strong></td><td>A CAUSE, or potential cause, of one or more incidents</td></tr>
-              <tr><td><strong>Known Error</strong></td><td>A problem that has been ANALYSED but NOT resolved</td></tr>
-              <tr><td><strong>Workaround</strong></td><td>A solution that REDUCES/ELIMINATES impact without a full resolution</td></tr>
-            </table>
+            <div class="table-responsive">
+              <table>
+                <tr><th>Term</th><th>Definition</th></tr>
+                <tr><td><strong>Problem</strong></td><td>A CAUSE, or potential cause, of one or more incidents</td></tr>
+                <tr><td><strong>Known Error</strong></td><td>A problem that has been ANALYSED but NOT resolved</td></tr>
+                <tr><td><strong>Workaround</strong></td><td>A solution that REDUCES/ELIMINATES impact without a full resolution</td></tr>
+              </table>
+            </div>
             <h3 class="sub-title">Three Phases</h3>
-            <table>
-              <tr><th>Phase</th><th>Key Activities</th></tr>
-              <tr><td><strong>1. Problem Identification</strong></td><td>Trend analysis, detect duplicate incidents, RCA for major incidents</td></tr>
-              <tr><td><strong>2. Problem Control</strong></td><td>Problem analysis, document workarounds, record known errors, prioritize by risk</td></tr>
-              <tr><td><strong>3. Error Control</strong></td><td>Manage known errors, identify permanent solutions, reassess regularly, evaluate workarounds each time used</td></tr>
-            </table>
+            <div class="table-responsive">
+              <table>
+                <tr><th>Phase</th><th>Key Activities</th></tr>
+                <tr><td><strong>1. Problem Identification</strong></td><td>Trend analysis, detect duplicate incidents, RCA for major incidents</td></tr>
+                <tr><td><strong>2. Problem Control</strong></td><td>Problem analysis, document workarounds, record known errors, prioritize by risk</td></tr>
+                <tr><td><strong>3. Error Control</strong></td><td>Manage known errors, identify permanent solutions, reassess regularly, evaluate workarounds each time used</td></tr>
+              </table>
+            </div>
             <div class="callout tip"><div class="label tip">Key Distinction</div>Problem management identifies causes &amp; manages workarounds. Implementation of resolution is often <strong>outside its scope</strong> — initiated via <strong>Change Enablement</strong>.</div>
             <div class="svc-pills" style="margin-top:0.6rem"><strong style="font-size:0.75rem;color:var(--muted)">SVC:</strong><span class="pill">Improve</span><span class="pill">Deliver &amp; Support</span></div>
           </div>
         </div>
 
-        <!-- P5: Continual Improvement -->
         <div class="practice" id="p5">
           <div class="practice-header" onclick="togglePractice(this)">
             <div class="practice-num">5</div>
-            <div class="practice-name">Continual Improvement <span style="font-weight:400;color:var(--muted);font-size:0.78rem">— General Management</span></div>
+            <div class="practice-name">Continual Improvement <span style="font-weight:400;color:var(--muted);font-size:0.8rem">— General Management</span></div>
             <div class="practice-arrow">▶</div>
           </div>
           <div class="practice-body">
             <div class="practice-purpose"><strong>Purpose:</strong> To <span class="hl">ALIGN</span> the organization's practices and services with <span class="hl">CHANGING BUSINESS NEEDS</span> via ongoing improvement of products, services, and practices.</div>
-            <p style="font-size:0.82rem;margin-bottom:0.6rem">Exists at <strong>strategic, tactical, and operational levels</strong>. Tracked in the <strong>Continual Improvement Register (CIR)</strong>.</p>
+            <p style="font-size:0.85rem;margin-bottom:0.6rem">Exists at <strong>strategic, tactical, and operational levels</strong>. Tracked in the <strong>Continual Improvement Register (CIR)</strong>.</p>
             <h3 class="sub-title">The Continual Improvement Model — 7 Steps</h3>
-            <table>
-              <tr><th>Step</th><th>Question</th><th>Key Action / Risk if Skipped</th></tr>
-              <tr><td>1</td><td><strong>What is the vision?</strong></td><td>Define high-level vision; ensure stakeholder roles understood. Skipped → misaligned improvements</td></tr>
-              <tr><td>2</td><td><strong>Where are we now?</strong></td><td>Current state assessment — establishes baseline. Skipped → no baseline to measure against</td></tr>
-              <tr><td>3</td><td><strong>Where do we want to be?</strong></td><td>Gap analysis; set SMART objectives, CSFs &amp; KPIs. Goal: improvement, not perfection. Skipped → unclear target, no stakeholder support</td></tr>
-              <tr><td>4</td><td><strong>How do we get there?</strong></td><td>Create plan; design experiments; work iteratively. Skipped → improvement flounders</td></tr>
-              <tr><td>5</td><td><strong>Take action</strong></td><td>Implement; waterfall or Agile; remain open to change. Creates new current state</td></tr>
-              <tr><td>6</td><td><strong>Did we get there?</strong></td><td>Validate success; check relevance; iterate if needed. Skipped → no confirmation; lessons lost</td></tr>
-              <tr><td>7</td><td><strong>How do we keep momentum?</strong></td><td>Market successes; embed changes; prevent reversion. Skipped → progress lost</td></tr>
-            </table>
+            <div class="table-responsive">
+              <table>
+                <tr><th>Step</th><th>Question</th><th>Key Action / Risk if Skipped</th></tr>
+                <tr><td>1</td><td><strong>What is the vision?</strong></td><td>Define high-level vision; ensure stakeholder roles understood. Skipped → misaligned improvements</td></tr>
+                <tr><td>2</td><td><strong>Where are we now?</strong></td><td>Current state assessment — establishes baseline. Skipped → no baseline to measure against</td></tr>
+                <tr><td>3</td><td><strong>Where do we want to be?</strong></td><td>Gap analysis; set SMART objectives, CSFs &amp; KPIs. Goal: improvement, not perfection. Skipped → unclear target, no stakeholder support</td></tr>
+                <tr><td>4</td><td><strong>How do we get there?</strong></td><td>Create plan; design experiments; work iteratively. Skipped → improvement flounders</td></tr>
+                <tr><td>5</td><td><strong>Take action</strong></td><td>Implement; waterfall or Agile; remain open to change. Creates new current state</td></tr>
+                <tr><td>6</td><td><strong>Did we get there?</strong></td><td>Validate success; check relevance; iterate if needed. Skipped → no confirmation; lessons lost</td></tr>
+                <tr><td>7</td><td><strong>How do we keep momentum?</strong></td><td>Market successes; embed changes; prevent reversion. Skipped → progress lost</td></tr>
+              </table>
+            </div>
             <div class="callout tip"><div class="label tip">Note</div>Model does NOT need to be followed linearly — you may return to a previous step. <strong>Logic and common sense prevail.</strong></div>
-            <p style="font-size:0.8rem;margin-top:0.5rem"><strong>SMART:</strong> Specific · Measurable · Achievable · Relevant · Time-bound</p>
+            <p style="font-size:0.85rem;margin-top:0.5rem"><strong>SMART:</strong> Specific · Measurable · Achievable · Relevant · Time-bound</p>
             <div class="svc-pills" style="margin-top:0.6rem"><strong style="font-size:0.75rem;color:var(--muted)">SVC:</strong><span class="pill">All activities</span></div>
           </div>
         </div>
 
-        <!-- P6: Service Level Management -->
         <div class="practice" id="p6">
           <div class="practice-header" onclick="togglePractice(this)">
             <div class="practice-num">6</div>
-            <div class="practice-name">Service Level Management <span style="font-weight:400;color:var(--muted);font-size:0.78rem">— Service Management</span></div>
+            <div class="practice-name">Service Level Management <span style="font-weight:400;color:var(--muted);font-size:0.8rem">— Service Management</span></div>
             <div class="practice-arrow">▶</div>
           </div>
           <div class="practice-body">
             <div class="practice-purpose"><strong>Purpose:</strong> To set clear <span class="hl">BUSINESS-BASED TARGETS</span> for service levels and ensure delivery is properly <span class="hl">ASSESSED, MONITORED, AND MANAGED</span> against these targets.</div>
-            <table>
-              <tr><th>Term</th><th>Definition</th></tr>
-              <tr><td><strong>Service Level</strong></td><td>One or more metrics that define expected or achieved service quality</td></tr>
-              <tr><td><strong>SLA</strong></td><td>Documented agreement between provider and customer on services required and expected service levels</td></tr>
-            </table>
+            <div class="table-responsive">
+              <table>
+                <tr><th>Term</th><th>Definition</th></tr>
+                <tr><td><strong>Service Level</strong></td><td>One or more metrics that define expected or achieved service quality</td></tr>
+                <tr><td><strong>SLA</strong></td><td>Documented agreement between provider and customer on services required and expected service levels</td></tr>
+              </table>
+            </div>
             <div class="callout"><div class="label warn">Watermelon SLA Effect</div>SLAs appear <strong>green</strong> on reports but the customer is <strong>red</strong> inside (unhappy). E.g., 99.6% availability met but the 0.4% downtime hit at the worst possible moment. <strong>Solution:</strong> Metrics must truly reflect the customer's actual experience.</div>
             <h3 class="sub-title">SLAs Must Be</h3>
             <ul class="kp">
@@ -973,184 +1127,210 @@
               <li>Reflect wider service performance, not just individual components</li>
             </ul>
             <h3 class="sub-title">Two Metric Types</h3>
-            <table>
-              <tr><th>Type</th><th>Description</th><th>Used by</th></tr>
-              <tr><td><strong>Operational</strong></td><td>Availability %, response times, fix times</td><td>IT service providers internally</td></tr>
-              <tr><td><strong>Business</strong></td><td>% successful transactions, terminal availability during business hours</td><td>Agreed based on what customer values</td></tr>
-            </table>
+            <div class="table-responsive">
+              <table>
+                <tr><th>Type</th><th>Description</th><th>Used by</th></tr>
+                <tr><td><strong>Operational</strong></td><td>Availability %, response times, fix times</td><td>IT service providers internally</td></tr>
+                <tr><td><strong>Business</strong></td><td>% successful transactions, terminal availability during business hours</td><td>Agreed based on what customer values</td></tr>
+              </table>
+            </div>
             <div class="svc-pills" style="margin-top:0.6rem"><strong style="font-size:0.75rem;color:var(--muted)">SVC:</strong><span class="pill">Plan</span><span class="pill">Engage</span></div>
           </div>
         </div>
 
-        <!-- P7: Change Enablement -->
         <div class="practice" id="p7">
           <div class="practice-header" onclick="togglePractice(this)">
             <div class="practice-num">7</div>
-            <div class="practice-name">Change Enablement <span style="font-weight:400;color:var(--muted);font-size:0.78rem">— Service Management &nbsp;(formerly Change Control)</span></div>
+            <div class="practice-name">Change Enablement <span style="font-weight:400;color:var(--muted);font-size:0.8rem">— Service Management &nbsp;(formerly Change Control)</span></div>
             <div class="practice-arrow">▶</div>
           </div>
           <div class="practice-body">
             <div class="practice-purpose"><strong>Purpose:</strong> To <span class="hl">MAXIMIZE SUCCESSFUL CHANGES</span> by ensuring risks are properly assessed, authorizing changes, and managing the <span class="hl">CHANGE SCHEDULE</span>.</div>
             <div class="callout"><div class="label warn">Key Stat</div><strong>80% of incidents</strong> in many organizations are caused by <strong>unauthorized change</strong>.</div>
             <h3 class="sub-title">Three Types of Change</h3>
-            <table>
-              <tr><th>Type</th><th>Description</th><th>Authorization</th></tr>
-              <tr>
-                <td><strong>Standard</strong></td>
-                <td>Low risk, pre-authorized, well-understood, fully documented. Often automated.</td>
-                <td>Pre-authorized when procedure is created — not repeated each time.</td>
-              </tr>
-              <tr>
-                <td><strong>Normal</strong></td>
-                <td>Scheduled, assessed, and authorized following a process. Can range from low to very major.</td>
-                <td>Initiated by a <strong>Change Request (RFC)</strong>. Change models define roles.</td>
-              </tr>
-              <tr>
-                <td><strong>Emergency</strong></td>
-                <td>Implemented ASAP (resolve incident / security patch). Some documentation may be deferred.</td>
-                <td>Separate <strong>Change Authority</strong> (small number of senior managers). Expedited process — still requires testing &amp; assessment.</td>
-              </tr>
-            </table>
+            <div class="table-responsive">
+              <table>
+                <tr><th>Type</th><th>Description</th><th>Authorization</th></tr>
+                <tr>
+                  <td><strong>Standard</strong></td>
+                  <td>Low risk, pre-authorized, well-understood, fully documented. Often automated.</td>
+                  <td>Pre-authorized when procedure is created — not repeated each time.</td>
+                </tr>
+                <tr>
+                  <td><strong>Normal</strong></td>
+                  <td>Scheduled, assessed, and authorized following a process. Can range from low to very major.</td>
+                  <td>Initiated by a <strong>Change Request (RFC)</strong>. Change models define roles.</td>
+                </tr>
+                <tr>
+                  <td><strong>Emergency</strong></td>
+                  <td>Implemented ASAP (resolve incident / security patch). Some documentation may be deferred.</td>
+                  <td>Separate <strong>Change Authority</strong> (small number of senior managers). Expedited process — still requires testing &amp; assessment.</td>
+                </tr>
+              </table>
+            </div>
             <div class="callout tip"><div class="label tip">Important Distinction</div><strong>Change Enablement</strong> = changes to products and services.<br><strong>Organizational Change Management</strong> = the people aspects of change. These are DIFFERENT.</div>
             <div class="svc-pills" style="margin-top:0.6rem"><strong style="font-size:0.75rem;color:var(--muted)">SVC:</strong><span class="pill">All activities</span></div>
           </div>
         </div>
 
-      </div><!-- /fulldepth -->
-    </div>
+      </div></div>
   </div>
 
-  <!-- ═══ QUICK REFERENCE ═══ -->
   <div class="module" id="quickref">
     <div class="module-header gray">Quick Reference — Key Definitions</div>
     <div class="module-body">
-      <table>
-        <tr><th>Term</th><th>Definition</th></tr>
-        <tr><td><strong>Value</strong></td><td>Perceived benefits, usefulness, and importance</td></tr>
-        <tr><td><strong>Service Management</strong></td><td>Specialized organizational capabilities enabling value</td></tr>
-        <tr><td><strong>Service</strong></td><td>Means of enabling value co-creation; customer avoids managing costs/risks</td></tr>
-        <tr><td><strong>Product</strong></td><td>Configuration of org's resources designed to offer value</td></tr>
-        <tr><td><strong>Service Offering (GAS)</strong></td><td>Formal description for a target consumer group (Goods + Access + Service Actions)</td></tr>
-        <tr><td><strong>Customer</strong></td><td>Defines requirements; responsible for outcomes</td></tr>
-        <tr><td><strong>User</strong></td><td>Uses services</td></tr>
-        <tr><td><strong>Sponsor</strong></td><td>Authorizes budget</td></tr>
-        <tr><td><strong>Output</strong></td><td>Tangible or intangible deliverable of an activity</td></tr>
-        <tr><td><strong>Outcome</strong></td><td>Result for a stakeholder enabled by one or more outputs</td></tr>
-        <tr><td><strong>Utility</strong></td><td>What it does — fit for purpose</td></tr>
-        <tr><td><strong>Warranty</strong></td><td>How it performs — fit for use</td></tr>
-        <tr><td><strong>Value Stream</strong></td><td>Series of steps to create and deliver products/services</td></tr>
-        <tr><td><strong>Process</strong></td><td>Interrelated activities transforming inputs to outputs</td></tr>
-        <tr><td><strong>Practice</strong></td><td>Set of organizational resources for performing work</td></tr>
-        <tr><td><strong>Incident</strong></td><td>Unplanned interruption or quality reduction to a service</td></tr>
-        <tr><td><strong>Problem</strong></td><td>Cause, or potential cause, of one or more incidents</td></tr>
-        <tr><td><strong>Known Error</strong></td><td>Problem that has been analysed but not resolved</td></tr>
-        <tr><td><strong>Workaround</strong></td><td>Solution reducing/eliminating impact without full resolution</td></tr>
-        <tr><td><strong>Change</strong></td><td>Addition, modification, or removal of anything affecting services directly or indirectly</td></tr>
-        <tr><td><strong>SLA</strong></td><td>Documented agreement on service requirements and expected service levels</td></tr>
-        <tr><td><strong>Event</strong></td><td>Any change of state significant for service or CI management</td></tr>
-        <tr><td><strong>CI</strong></td><td>Configuration Item — any component needing to be managed to deliver IT service</td></tr>
-        <tr><td><strong>CMDB</strong></td><td>Configuration Management Database — stores configuration records and relationships</td></tr>
-        <tr><td><strong>CIR</strong></td><td>Continual Improvement Register — tracks improvement ideas from identification to action</td></tr>
-        <tr><td><strong>RFC</strong></td><td>Request for Change — initiates a normal change</td></tr>
-        <tr><td><strong>MVP</strong></td><td>Minimum Viable Product — maximum learning with minimum effort</td></tr>
-        <tr><td><strong>SIAM</strong></td><td>Service Integration and Management — coordinating multiple supplier relationships</td></tr>
-        <tr><td><strong>PESTLE</strong></td><td>Political, Economic, Social, Technological, Legal, Environmental</td></tr>
-        <tr><td><strong>SMART</strong></td><td>Specific, Measurable, Achievable, Relevant, Time-bound</td></tr>
-        <tr><td><strong>CSF</strong></td><td>Critical Success Factor — things without which an objective cannot be achieved</td></tr>
-        <tr><td><strong>KPI</strong></td><td>Key Performance Indicator — metrics measured under each CSF</td></tr>
-      </table>
+      <div class="table-responsive">
+        <table>
+          <tr><th>Term</th><th>Definition</th></tr>
+          <tr><td><strong>Value</strong></td><td>Perceived benefits, usefulness, and importance</td></tr>
+          <tr><td><strong>Service Management</strong></td><td>Specialized organizational capabilities enabling value</td></tr>
+          <tr><td><strong>Service</strong></td><td>Means of enabling value co-creation; customer avoids managing costs/risks</td></tr>
+          <tr><td><strong>Product</strong></td><td>Configuration of org's resources designed to offer value</td></tr>
+          <tr><td><strong>Service Offering (GAS)</strong></td><td>Formal description for a target consumer group (Goods + Access + Service Actions)</td></tr>
+          <tr><td><strong>Customer</strong></td><td>Defines requirements; responsible for outcomes</td></tr>
+          <tr><td><strong>User</strong></td><td>Uses services</td></tr>
+          <tr><td><strong>Sponsor</strong></td><td>Authorizes budget</td></tr>
+          <tr><td><strong>Output</strong></td><td>Tangible or intangible deliverable of an activity</td></tr>
+          <tr><td><strong>Outcome</strong></td><td>Result for a stakeholder enabled by one or more outputs</td></tr>
+          <tr><td><strong>Utility</strong></td><td>What it does — fit for purpose</td></tr>
+          <tr><td><strong>Warranty</strong></td><td>How it performs — fit for use</td></tr>
+          <tr><td><strong>Value Stream</strong></td><td>Series of steps to create and deliver products/services</td></tr>
+          <tr><td><strong>Process</strong></td><td>Interrelated activities transforming inputs to outputs</td></tr>
+          <tr><td><strong>Practice</strong></td><td>Set of organizational resources for performing work</td></tr>
+          <tr><td><strong>Incident</strong></td><td>Unplanned interruption or quality reduction to a service</td></tr>
+          <tr><td><strong>Problem</strong></td><td>Cause, or potential cause, of one or more incidents</td></tr>
+          <tr><td><strong>Known Error</strong></td><td>Problem that has been analysed but not resolved</td></tr>
+          <tr><td><strong>Workaround</strong></td><td>Solution reducing/eliminating impact without full resolution</td></tr>
+          <tr><td><strong>Change</strong></td><td>Addition, modification, or removal of anything affecting services directly or indirectly</td></tr>
+          <tr><td><strong>SLA</strong></td><td>Documented agreement on service requirements and expected service levels</td></tr>
+          <tr><td><strong>Event</strong></td><td>Any change of state significant for service or CI management</td></tr>
+          <tr><td><strong>CI</strong></td><td>Configuration Item — any component needing to be managed to deliver IT service</td></tr>
+          <tr><td><strong>CMDB</strong></td><td>Configuration Management Database — stores configuration records and relationships</td></tr>
+          <tr><td><strong>CIR</strong></td><td>Continual Improvement Register — tracks improvement ideas from identification to action</td></tr>
+          <tr><td><strong>RFC</strong></td><td>Request for Change — initiates a normal change</td></tr>
+          <tr><td><strong>MVP</strong></td><td>Minimum Viable Product — maximum learning with minimum effort</td></tr>
+          <tr><td><strong>SIAM</strong></td><td>Service Integration and Management — coordinating multiple supplier relationships</td></tr>
+          <tr><td><strong>PESTLE</strong></td><td>Political, Economic, Social, Technological, Legal, Environmental</td></tr>
+          <tr><td><strong>SMART</strong></td><td>Specific, Measurable, Achievable, Relevant, Time-bound</td></tr>
+          <tr><td><strong>CSF</strong></td><td>Critical Success Factor — things without which an objective cannot be achieved</td></tr>
+          <tr><td><strong>KPI</strong></td><td>Key Performance Indicator — metrics measured under each CSF</td></tr>
+        </table>
+      </div>
     </div>
   </div>
 
-  <!-- ═══ EXAM TIPS ═══ -->
   <div class="module" id="examtips">
     <div class="module-header orange">Exam Tips &amp; Key Distinguishers</div>
     <div class="module-body">
-
-      <table>
-        <tr><th>#</th><th>Topic</th><th>Remember</th></tr>
-        <tr>
-          <td>1</td>
-          <td><strong>Service vs Product</strong></td>
-          <td>Service = enables <em>value co-creation</em>; customer avoids costs/risks<br>Product = <em>configuration of resources</em> designed to offer value</td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td><strong>Utility vs Warranty</strong></td>
-          <td>Utility = <span class="hl">Fit for PURPOSE</span> (what it does)<br>Warranty = <span class="hl">Fit for USE</span> (how it performs)<br><strong>Both required for value</strong></td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td><strong>Output vs Outcome</strong></td>
-          <td>Output = deliverable (e.g., album)<br>Outcome = result achieved (e.g., preserved memories)</td>
-        </tr>
-        <tr>
-          <td>4</td>
-          <td><strong>Customer / User / Sponsor</strong></td>
-          <td>Customer: defines requirements<br>User: uses the service<br>Sponsor: authorizes budget</td>
-        </tr>
-        <tr>
-          <td>5</td>
-          <td><strong>Three Change Types</strong></td>
-          <td>Standard = low risk, pre-authorized<br>Normal = scheduled, assessed, authorized<br>Emergency = ASAP, expedited</td>
-        </tr>
-        <tr>
-          <td>6</td>
-          <td><strong>Problem Management Phases</strong></td>
-          <td>Problem Identification → Problem Control (workarounds) → Error Control (known errors + solutions)</td>
-        </tr>
-        <tr>
-          <td>7</td>
-          <td><strong>SVC Activities — PIEDOD</strong></td>
-          <td>Plan · Improve · Engage · Design &amp; Transition · Obtain/Build · Deliver &amp; Support</td>
-        </tr>
-        <tr>
-          <td>8</td>
-          <td><strong>SVS Components</strong></td>
-          <td>Guiding Principles · Governance · Service Value Chain · Practices · Continual Improvement</td>
-        </tr>
-        <tr>
-          <td>9</td>
-          <td><strong>Four Dimensions — OIPV</strong></td>
-          <td>Organizations &amp; People · Information &amp; Technology · Partners &amp; Suppliers · Value Streams &amp; Processes</td>
-        </tr>
-        <tr>
-          <td>10</td>
-          <td><strong>7 Guiding Principles</strong></td>
-          <td>Focus on Value · Start Where You Are · Progress Iteratively · Collaborate &amp; Visibility · Think Holistically · Keep It Simple · Optimize &amp; Automate</td>
-        </tr>
-        <tr>
-          <td>11</td>
-          <td><strong>Change Enablement vs Org Change Mgmt</strong></td>
-          <td>Change Enablement = changes to <em>products and services</em><br>Org Change Mgmt = <em>people aspects</em> of change</td>
-        </tr>
-        <tr>
-          <td>12</td>
-          <td><strong>Release vs Deployment</strong></td>
-          <td>Deployment = move to an <em>environment</em><br>Release = into the <em>hands of users</em></td>
-        </tr>
-        <tr>
-          <td>13</td>
-          <td><strong>Watermelon SLA</strong></td>
-          <td>Green on paper, red in reality. Metrics must reflect actual customer experience.</td>
-        </tr>
-        <tr>
-          <td>14</td>
-          <td><strong>Optimize and Automate rule</strong></td>
-          <td><strong>Always optimize first, then automate.</strong> Automating a bad process just makes a bad process faster.</td>
-        </tr>
-      </table>
-
+      <div class="table-responsive">
+        <table>
+          <tr><th>#</th><th>Topic</th><th>Remember</th></tr>
+          <tr>
+            <td>1</td>
+            <td><strong>Service vs Product</strong></td>
+            <td>Service = enables <em>value co-creation</em>; customer avoids costs/risks<br>Product = <em>configuration of resources</em> designed to offer value</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><strong>Utility vs Warranty</strong></td>
+            <td>Utility = <span class="hl">Fit for PURPOSE</span> (what it does)<br>Warranty = <span class="hl">Fit for USE</span> (how it performs)<br><strong>Both required for value</strong></td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><strong>Output vs Outcome</strong></td>
+            <td>Output = deliverable (e.g., album)<br>Outcome = result achieved (e.g., preserved memories)</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td><strong>Customer / User / Sponsor</strong></td>
+            <td>Customer: defines requirements<br>User: uses the service<br>Sponsor: authorizes budget</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td><strong>Three Change Types</strong></td>
+            <td>Standard = low risk, pre-authorized<br>Normal = scheduled, assessed, authorized<br>Emergency = ASAP, expedited</td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td><strong>Problem Management Phases</strong></td>
+            <td>Problem Identification → Problem Control (workarounds) → Error Control (known errors + solutions)</td>
+          </tr>
+          <tr>
+            <td>7</td>
+            <td><strong>SVC Activities — PIEDOD</strong></td>
+            <td>Plan · Improve · Engage · Design &amp; Transition · Obtain/Build · Deliver &amp; Support</td>
+          </tr>
+          <tr>
+            <td>8</td>
+            <td><strong>SVS Components</strong></td>
+            <td>Guiding Principles · Governance · Service Value Chain · Practices · Continual Improvement</td>
+          </tr>
+          <tr>
+            <td>9</td>
+            <td><strong>Four Dimensions — OIPV</strong></td>
+            <td>Organizations &amp; People · Information &amp; Technology · Partners &amp; Suppliers · Value Streams &amp; Processes</td>
+          </tr>
+          <tr>
+            <td>10</td>
+            <td><strong>7 Guiding Principles</strong></td>
+            <td>Focus on Value · Start Where You Are · Progress Iteratively · Collaborate &amp; Visibility · Think Holistically · Keep It Simple · Optimize &amp; Automate</td>
+          </tr>
+          <tr>
+            <td>11</td>
+            <td><strong>Change Enablement vs Org Change Mgmt</strong></td>
+            <td>Change Enablement = changes to <em>products and services</em><br>Org Change Mgmt = <em>people aspects</em> of change</td>
+          </tr>
+          <tr>
+            <td>12</td>
+            <td><strong>Release vs Deployment</strong></td>
+            <td>Deployment = move to an <em>environment</em><br>Release = into the <em>hands of users</em></td>
+          </tr>
+          <tr>
+            <td>13</td>
+            <td><strong>Watermelon SLA</strong></td>
+            <td>Green on paper, red in reality. Metrics must reflect actual customer experience.</td>
+          </tr>
+          <tr>
+            <td>14</td>
+            <td><strong>Optimize and Automate rule</strong></td>
+            <td><strong>Always optimize first, then automate.</strong> Automating a bad process just makes a bad process faster.</td>
+          </tr>
+        </table>
+      </div>
     </div>
   </div>
 
 </main>
 
 <script>
+  // Accordion Toggle
   function togglePractice(header) {
     header.classList.toggle('open');
     const body = header.nextElementSibling;
     body.classList.toggle('open');
+  }
+
+  // Mobile Sidebar Toggle
+  function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.querySelector('.sidebar-overlay');
+    
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('open');
+    
+    // Lock body scroll when menu is open on mobile
+    if (sidebar.classList.contains('open')) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+  }
+
+  // Close sidebar when a navigation link is clicked (mobile UX)
+  function closeSidebarOnMobile() {
+    if (window.innerWidth < 768) {
+      toggleSidebar();
+    }
   }
 </script>
 
