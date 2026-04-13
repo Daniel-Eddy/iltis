@@ -131,6 +131,30 @@
       color: #8892a4;
       margin-top: 0.25rem;
     }
+    /* ── Search Box ── */
+    .search-box {
+      padding: 0 1.25rem 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: 0.5rem;
+    }
+    #searchInput {
+      width: 100%;
+      padding: 0.55rem 0.85rem;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(0,0,0,0.25);
+      color: #ffffff;
+      font-size: 0.85rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    #searchInput::placeholder {
+      color: #8892a4;
+    }
+    #searchInput:focus {
+      border-color: var(--accent);
+      background: rgba(0,0,0,0.4);
+    }
     #sidebar nav a {
       display: block;
       padding: 0.5rem 1.25rem;
@@ -547,6 +571,9 @@
   <div class="logo">
     <h1>ITIL 4 Foundation</h1>
     <p>Study Notes — Concise Edition</p>
+  </div>
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="Search notes..." onkeyup="filterNotes()">
   </div>
   <nav>
     <div class="section-label">Overview</div>
@@ -1331,6 +1358,28 @@
     if (window.innerWidth < 768) {
       toggleSidebar();
     }
+  }
+
+  // Live Search Filter
+  function filterNotes() {
+    const input = document.getElementById('searchInput').value.toLowerCase();
+    const modules = document.querySelectorAll('.module');
+
+    modules.forEach(module => {
+      // Check if the text inside the module contains the search query
+      if (module.innerText.toLowerCase().includes(input)) {
+        module.style.display = 'block'; // Show module
+        
+        // Auto-expand accordions if the user is actively typing a word
+        // This ensures they can see matching text inside closed practice sections
+        if (input.length > 2) {
+          const practices = module.querySelectorAll('.practice-header, .practice-body');
+          practices.forEach(p => p.classList.add('open'));
+        }
+      } else {
+        module.style.display = 'none'; // Hide module if no match
+      }
+    });
   }
 </script>
 
